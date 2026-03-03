@@ -1,0 +1,7 @@
+check,description,stat,p_value,pass,detail
+optimal_temp_better_sleep,T(18–21°C) sessions have higher efficiency than T outside range,22.3103,0.0,True,"opt mean=0.823, non-opt mean=0.717"
+light_events_reduce_efficiency,Light events negatively correlated with sleep efficiency,-0.5215,0.0,True,Pearson r=-0.5215
+awakenings_in_range,"Mean awakenings in published range [1.5, 4.0]",2.908,,True,mean awakenings=2.908
+noise_events_increase_awakenings,Noise events positively correlated with awakenings,0.6397,0.0,True,Pearson r=0.6397
+efficiency_healthy_range,"≥ 50% of sessions have efficiency in healthy range [0.75, 0.95]",0.556,,True,"55.6% of sessions in [0.75, 0.95]"
+good_class_better_than_poor,Good quality class has higher efficiency than poor class,41.0712,0.0,True,"good mean=0.865, poor mean=0.666"

@@ -1,0 +1,44 @@
+{
+  "n_sessions": 2500,
+  "n_features": 34,
+  "n_labels": 4,
+  "seed": 42,
+  "dataset_path": "/home/rushav/Desktop/Techin513_Final/data/synthetic_sleep_dataset.csv",
+  "label_stats": {
+    "sleep_efficiency": {
+      "mean": 0.7668,
+      "std": 0.1299,
+      "min": 0.5,
+      "max": 0.94
+    },
+    "sleep_duration_h": {
+      "mean": 6.1459,
+      "std": 1.0626,
+      "min": 4.0,
+      "max": 8.5
+    },
+    "awakenings": {
+      "mean": 2.9084,
+      "std": 1.3951,
+      "min": 1.0,
+      "max": 7.0
+    },
+    "sleep_score": {
+      "mean": 77.8841,
+      "std": 11.5599,
+      "min": 48.67,
+      "max": 100.0
+    }
+  },
+  "season_counts": {
+    "winter": 625,
+    "spring": 625,
+    "summer": 625,
+    "autumn": 625
+  },
+  "quality_counts": {
+    "poor": 836,
+    "moderate": 832,
+    "good": 832
+  }
+}
