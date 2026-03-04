@@ -1,0 +1,177 @@
+{
+  "test_metrics": {
+    "test_sleep_efficiency_r2": 0.869650458951711,
+    "test_sleep_efficiency_mae": 0.0382506133333334,
+    "test_sleep_efficiency_rmse": 0.046229073488372435,
+    "test_sleep_duration_h_r2": 0.8070732832226155,
+    "test_sleep_duration_h_mae": 0.3608081333333331,
+    "test_sleep_duration_h_rmse": 0.4437994002504586,
+    "test_awakenings_r2": 0.7499496176517445,
+    "test_awakenings_mae": 0.6314666666666666,
+    "test_awakenings_rmse": 0.7470394902546986,
+    "test_sleep_score_r2": 0.7978888508415933,
+    "test_sleep_score_mae": 3.911953333333338,
+    "test_sleep_score_rmse": 4.871978116412271,
+    "test_mean_r2": 0.8061405526669161
+  },
+  "val_metrics": {
+    "val_sleep_efficiency_r2": 0.8846327288923364,
+    "val_sleep_efficiency_mae": 0.03566860666666664,
+    "val_sleep_efficiency_rmse": 0.044365281328496764,
+    "val_sleep_duration_h_r2": 0.822621679533262,
+    "val_sleep_duration_h_mae": 0.34449999999999953,
+    "val_sleep_duration_h_rmse": 0.4328917056886166,
+    "val_awakenings_r2": 0.7170079268292683,
+    "val_awakenings_mae": 0.6338666666666667,
+    "val_awakenings_rmse": 0.7866443499659381,
+    "val_sleep_score_r2": 0.832141141551797,
+    "val_sleep_score_mae": 3.6112819999999966,
+    "val_sleep_score_rmse": 4.584741676572408,
+    "val_mean_r2": 0.8141008692016659,
+    "best_params": "{'n_estimators': 200, 'max_features': 'log2', 'min_samples_split': 2}"
+  },
+  "cv_metrics": {
+    "sleep_efficiency_cv_r2_mean": 0.843079504182413,
+    "sleep_efficiency_cv_r2_std": 0.029797910049231956,
+    "sleep_duration_h_cv_r2_mean": 0.7660908040942246,
+    "sleep_duration_h_cv_r2_std": 0.04719054658557902,
+    "awakenings_cv_r2_mean": 0.7377324190969196,
+    "awakenings_cv_r2_std": 0.03136397921839109,
+    "sleep_score_cv_r2_mean": 0.7559427719286116,
+    "sleep_score_cv_r2_std": 0.0439690449965333
+  },
+  "baselines": {
+    "mean_baseline": {
+      "test_sleep_efficiency_r2": -2.6822133489368127e-05,
+      "test_sleep_efficiency_mae": 0.10670714285714285,
+      "test_sleep_efficiency_rmse": 0.1280460720565674,
+      "test_sleep_duration_h_r2": -1.8450086669119514e-05,
+      "test_sleep_duration_h_mae": 0.8577042666666667,
+      "test_sleep_duration_h_rmse": 1.0104027755966098,
+      "test_awakenings_r2": -0.0031472203346847305,
+      "test_awakenings_mae": 1.2458666666666667,
+      "test_awakenings_rmse": 1.4962774670840304,
+      "test_sleep_score_r2": -0.0008217045129905731,
+      "test_sleep_score_mae": 9.286406857142856,
+      "test_sleep_score_rmse": 10.84147944664882,
+      "test_mean_r2": -0.0010035492669584478
+    },
+    "ridge_regression": {
+      "test_sleep_efficiency_r2": 0.8572675146060094,
+      "test_sleep_efficiency_mae": 0.04126929556428203,
+      "test_sleep_efficiency_rmse": 0.04837509717310906,
+      "test_sleep_duration_h_r2": 0.7992467006896857,
+      "test_sleep_duration_h_mae": 0.36460323227727526,
+      "test_sleep_duration_h_rmse": 0.4527118577150923,
+      "test_awakenings_r2": 0.7775359188591134,
+      "test_awakenings_mae": 0.5771802044842951,
+      "test_awakenings_rmse": 0.7046277598395327,
+      "test_sleep_score_r2": 0.7544829982588767,
+      "test_sleep_score_mae": 4.525368428843519,
+      "test_sleep_score_rmse": 5.369711824739836,
+      "test_mean_r2": 0.7971332831034214
+    }
+  },
+  "ks_n_pass": 1,
+  "ks_n_total": 6,
+  "sanity_n_pass": 6,
+  "discriminability": {
+    "auc_roc": 1.0,
+    "auc_std": 0.0001,
+    "interpretation": "Strongly structured \u2014 dataset contains non-random patterns (confirms SP pipeline is effective)"
+  },
+  "ablation": [
+    {
+      "ablation": "full_pipeline",
+      "description": "Full pipeline \u2014 all SP components active",
+      "mean_r2": 0.8061,
+      "delta_r2": 0.0,
+      "temp_acf1_mean": 0.8801,
+      "light_n_events_mean": 1.73,
+      "noise_n_events_mean": 1.062,
+      "temp_hvac_power_mean": 2.458131
+    },
+    {
+      "ablation": "no_lpf",
+      "description": "No Butterworth LPF \u2014 HF noise added back to temperature",
+      "mean_r2": 0.8207,
+      "delta_r2": 0.0146,
+      "temp_acf1_mean": 0.7595,
+      "light_n_events_mean": 1.73,
+      "noise_n_events_mean": 1.062,
+      "temp_hvac_power_mean": 2.546776
+    },
+    {
+      "ablation": "no_pink",
+      "description": "No pink noise \u2014 white noise substituted for 1/f noise component",
+      "mean_r2": 0.8149,
+      "delta_r2": 0.0088,
+      "temp_acf1_mean": 0.8613,
+      "light_n_events_mean": 1.73,
+      "noise_n_events_mean": 1.062,
+      "temp_hvac_power_mean": 2.467954
+    },
+    {
+      "ablation": "no_poisson",
+      "description": "No Poisson events \u2014 light/noise events removed entirely",
+      "mean_r2": 0.2494,
+      "delta_r2": -0.5567,
+      "temp_acf1_mean": 0.8801,
+      "light_n_events_mean": 0.0,
+      "noise_n_events_mean": 0.0,
+      "temp_hvac_power_mean": 2.458131
+    },
+    {
+      "ablation": "no_hvac",
+      "description": "No HVAC sawtooth \u2014 temperature over-smoothed to remove HVAC cycle",
+      "mean_r2": 0.8085,
+      "delta_r2": 0.0023,
+      "temp_acf1_mean": 0.9721,
+      "light_n_events_mean": 1.73,
+      "noise_n_events_mean": 1.062,
+      "temp_hvac_power_mean": 2.624433
+    }
+  ],
+  "top10_features": [
+    {
+      "feature": "env_stress_score",
+      "importance": 0.20877974442164868
+    },
+    {
+      "feature": "light_frac_dark",
+      "importance": 0.0774189262865896
+    },
+    {
+      "feature": "light_n_events",
+      "importance": 0.07627744990492508
+    },
+    {
+      "feature": "light_mean",
+      "importance": 0.059151749099642326
+    },
+    {
+      "feature": "light_total_lux_min",
+      "importance": 0.05668970035785901
+    },
+    {
+      "feature": "temp_std",
+      "importance": 0.0427044948116748
+    },
+    {
+      "feature": "temp_in_optimal",
+      "importance": 0.03982041753402733
+    },
+    {
+      "feature": "noise_std",
+      "importance": 0.03603138459707487
+    },
+    {
+      "feature": "temp_mean",
+      "importance": 0.035887751855042255
+    },
+    {
+      "feature": "noise_n_events",
+      "importance": 0.034719751214901604
+    }
+  ]
+}

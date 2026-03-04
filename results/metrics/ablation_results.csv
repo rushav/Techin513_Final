@@ -1,6 +1,6 @@
 ablation,description,mean_r2,delta_r2,temp_acf1_mean,light_n_events_mean,noise_n_events_mean,temp_hvac_power_mean
-full_pipeline,Full pipeline — all SP components active,0.7949,0.0,0.8797,1.735,1.067,2.417749
-no_lpf,No Butterworth LPF — HF noise added back to temperature,0.7882,-0.0067,0.7582,1.735,1.067,2.497938
-no_pink,No pink noise — white noise substituted for 1/f noise component,0.7954,0.0005,0.8605,1.735,1.067,2.425514
-no_poisson,No Poisson events — light/noise events removed entirely,0.2236,-0.5713,0.8797,0.0,0.0,2.417749
-no_hvac,No HVAC sawtooth — temperature over-smoothed to remove HVAC cycle,0.7975,0.0026,0.9721,1.735,1.067,2.588756
+full_pipeline,Full pipeline — all SP components active,0.8061,0.0,0.8801,1.73,1.062,2.458131
+no_lpf,No Butterworth LPF — HF noise added back to temperature,0.8207,0.0146,0.7595,1.73,1.062,2.546776
+no_pink,No pink noise — white noise substituted for 1/f noise component,0.8149,0.0088,0.8613,1.73,1.062,2.467954
+no_poisson,No Poisson events — light/noise events removed entirely,0.2494,-0.5567,0.8801,0.0,0.0,2.458131
+no_hvac,No HVAC sawtooth — temperature over-smoothed to remove HVAC cycle,0.8085,0.0023,0.9721,1.73,1.062,2.624433
