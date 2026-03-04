@@ -1,0 +1,89 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * { box-sizing: border-box; }
+
+  html {
+    scroll-behavior: smooth;
+    background-color: #0a0a0f;
+  }
+
+  body {
+    @apply bg-bg text-slate-100 font-sans;
+    font-feature-settings: 'cv02','cv03','cv04','cv11';
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: #12121a; }
+  ::-webkit-scrollbar-thumb { background: #1e1e2e; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #6366f1; }
+}
+
+@layer components {
+  .section-heading {
+    @apply text-2xl font-bold text-slate-100 mb-1;
+    position: relative;
+    display: inline-block;
+  }
+  .section-heading::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 40px;
+    height: 3px;
+    background: linear-gradient(90deg, #6366f1, #22d3ee);
+    border-radius: 2px;
+  }
+
+  .glow-card {
+    @apply bg-surface border border-border rounded-xl p-5;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .glow-card:hover {
+    border-color: #6366f1;
+    box-shadow: 0 0 20px rgba(99,102,241,0.15);
+  }
+
+  .metric-badge {
+    @apply inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-semibold;
+    border: 1px solid;
+  }
+
+  .tab-btn {
+    @apply px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200;
+  }
+  .tab-btn.active {
+    @apply bg-primary text-white;
+    box-shadow: 0 0 12px rgba(99,102,241,0.4);
+  }
+  .tab-btn:not(.active) {
+    @apply text-muted hover:text-slate-200 hover:bg-border;
+  }
+
+  .callout {
+    @apply border-l-4 border-primary bg-surface rounded-r-lg p-4 text-sm text-slate-300;
+  }
+
+  .code-block {
+    @apply font-mono text-sm bg-black border border-border rounded-lg p-4 overflow-x-auto;
+    color: #22d3ee;
+  }
+
+  .pill {
+    @apply text-xs font-mono px-2 py-0.5 rounded border;
+  }
+}
+
+/* Plotly overrides for dark theme */
+.js-plotly-plot .plotly .cursor-crosshair { cursor: crosshair !important; }
+.plotly-notifier { display: none !important; }
+
+/* Framer Motion fade-up entry */
+.fade-up-enter {
+  opacity: 0;
+  transform: translateY(24px);
+}

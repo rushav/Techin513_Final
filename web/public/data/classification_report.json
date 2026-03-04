@@ -1,0 +1,1 @@
+{"Good":{"precision":0.6296,"recall":0.68,"f1":0.6538,"support":25},"Moderate":{"precision":0.5714,"recall":0.48,"f1":0.5217,"support":25},"Poor":{"precision":0.8148,"recall":0.88,"f1":0.8462,"support":25},"macro_avg":{"precision":0.672,"recall":0.68,"f1":0.6739,"support":75},"accuracy":0.68}
