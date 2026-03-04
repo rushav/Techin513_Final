@@ -5,33 +5,37 @@ import { Badge } from '../ui/Badge'
 import { ConfusionMatrix } from '../charts/ConfusionMatrix'
 import { ROCChart } from '../charts/ROCChart'
 
+// ml_summary.json keys: rf_test_mean_r2, clf_accuracy, clf_macro_f1, per_label: {label: {test_r2, test_rmse, ...}}, ridge_mean_r2
+// classification_report.json: { Good: {precision, recall, f1-score}, ... }
+
 export function MLSection() {
   const { data: mlSummary } = useData('ml_summary.json')
   const { data: cm } = useData('confusion_matrix.json')
   const { data: roc } = useData('roc_curves.json')
+  const { data: clsReport } = useData('classification_report.json')
   const [activeTab, setActiveTab] = useState('confusion')
 
-  const rf = mlSummary?.rf
-  const ridge = mlSummary?.ridge
+  const rfR2 = mlSummary?.rf_test_mean_r2
+  const ridgeR2 = mlSummary?.ridge_mean_r2
+  const accuracy = mlSummary?.clf_accuracy
+  const macroF1 = mlSummary?.clf_macro_f1
 
   return (
     <section id="ml" className="py-16 scroll-mt-6">
       <SectionHeader
         title="ML Models"
-        subtitle="We train a Random Forest regressor to predict sleep quality score (continuous) and a Random Forest classifier to predict quality class (good/moderate/poor). A Ridge regression baseline is included for comparison. All models use an 80/20 train/test split with seed=42."
+        subtitle="We train a Random Forest regressor (multi-output) to predict sleep quality labels from environmental features, and a Random Forest classifier for quality class prediction. A Ridge regression baseline is included. All models use 80/20 train/test split, seed=42, 5-fold CV."
       />
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        {rf && [
-          { label: 'RF R²', value: rf.r2?.toFixed(3), variant: 'primary' },
-          { label: 'RF RMSE', value: rf.rmse?.toFixed(3), variant: 'secondary' },
-          { label: 'Ridge R²', value: ridge?.r2?.toFixed(3), variant: 'neutral' },
-          { label: 'RF Accuracy', value: `${(rf.accuracy * 100)?.toFixed(1)}%`, variant: 'success' },
+        {[
+          { label: 'RF Mean R²', value: rfR2?.toFixed(3), variant: 'primary' },
+          { label: 'Ridge Mean R²', value: ridgeR2?.toFixed(3), variant: 'secondary' },
+          { label: 'Classifier Accuracy', value: accuracy ? `${(accuracy * 100).toFixed(1)}%` : null, variant: 'success' },
+          { label: 'Macro F1', value: macroF1?.toFixed(3), variant: 'warning' },
         ].map(({ label, value, variant }) => (
           <Card key={label} className="text-center py-4">
-            <div className="text-2xl font-bold font-mono mb-1">
-              <Badge variant={variant}>{value ?? '—'}</Badge>
-            </div>
+            <Badge variant={variant}>{value ?? '—'}</Badge>
             <div className="text-xs text-slate-500 mt-2 uppercase tracking-wider">{label}</div>
           </Card>
         ))}
@@ -51,7 +55,7 @@ export function MLSection() {
           {activeTab === 'confusion' ? (
             <>
               <h3 className="text-sm font-semibold text-slate-300 mb-3">Confusion Matrix (RF Classifier)</h3>
-              <ConfusionMatrix matrix={cm?.matrix} height={300} />
+              <ConfusionMatrix matrix={cm?.matrix_raw} height={300} />
             </>
           ) : (
             <>
@@ -62,35 +66,40 @@ export function MLSection() {
         </Card>
 
         <Card>
-          <h3 className="text-sm font-semibold text-slate-300 mb-3">Classification Report</h3>
-          <div className="space-y-2 text-sm">
-            {['good', 'moderate', 'poor'].map((cls, i) => {
-              const report = mlSummary?.classification_report?.[cls]
-              const colors = ['#4ade80', '#fb923c', '#f87171']
-              if (!report) return null
-              return (
-                <div key={cls} className="flex items-center gap-3 p-3 rounded-lg bg-black/20">
-                  <div className="w-2 h-2 rounded-full shrink-0" style={{ background: colors[i] }} />
-                  <div className="w-20 font-medium text-slate-300 capitalize">{cls}</div>
-                  <div className="flex gap-3 text-xs font-mono text-slate-400">
-                    <span>P: <strong className="text-slate-200">{report.precision?.toFixed(2)}</strong></span>
-                    <span>R: <strong className="text-slate-200">{report.recall?.toFixed(2)}</strong></span>
-                    <span>F1: <strong className="text-slate-200">{report['f1-score']?.toFixed(2)}</strong></span>
-                  </div>
+          <h3 className="text-sm font-semibold text-slate-300 mb-3">Per-Label R² (RF Regressor)</h3>
+          <div className="space-y-2 text-sm mb-4">
+            {Object.entries(mlSummary?.per_label ?? {}).map(([key, v]) => (
+              <div key={key} className="flex items-center gap-3 p-3 rounded-lg bg-black/20">
+                <div className="w-36 font-medium text-slate-300 text-xs">{v.display ?? key}</div>
+                <div className="flex-1 bg-border rounded-full h-1.5">
+                  <div className="h-1.5 rounded-full bg-primary" style={{ width: `${Math.max(0, (v.test_r2 ?? 0) * 100).toFixed(1)}%` }} />
                 </div>
-              )
-            })}
+                <div className="font-mono text-xs text-slate-300 w-12 text-right">{v.test_r2?.toFixed(3)}</div>
+              </div>
+            ))}
           </div>
 
-          <div className="mt-4 pt-4 border-t border-border">
-            <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Hyperparameters</h4>
-            <div className="grid grid-cols-2 gap-2 text-xs font-mono text-slate-400">
-              <span>n_estimators</span><span className="text-secondary">200</span>
-              <span>max_depth</span><span className="text-secondary">None</span>
-              <span>min_samples_leaf</span><span className="text-secondary">2</span>
-              <span>random_state</span><span className="text-secondary">42</span>
-            </div>
-          </div>
+          {clsReport && (
+            <>
+              <h3 className="text-sm font-semibold text-slate-300 mb-2 pt-2 border-t border-border">Classification Report</h3>
+              <div className="space-y-1.5">
+                {['Good', 'Moderate', 'Poor'].map((cls, i) => {
+                  const r = clsReport[cls]
+                  if (!r) return null
+                  const colors = ['#4ade80', '#fb923c', '#f87171']
+                  return (
+                    <div key={cls} className="flex items-center gap-3 text-xs font-mono text-slate-400">
+                      <div className="w-2 h-2 rounded-full shrink-0" style={{ background: colors[i] }} />
+                      <div className="w-16 text-slate-300">{cls}</div>
+                      <span>P:<strong className="text-slate-200 ml-1">{r.precision?.toFixed(2)}</strong></span>
+                      <span>R:<strong className="text-slate-200 ml-1">{r.recall?.toFixed(2)}</strong></span>
+                      <span>F1:<strong className="text-slate-200 ml-1">{r['f1-score']?.toFixed(2)}</strong></span>
+                    </div>
+                  )
+                })}
+              </div>
+            </>
+          )}
         </Card>
       </div>
     </section>

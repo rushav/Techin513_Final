@@ -3,8 +3,12 @@ import { useData } from '../../hooks/useData'
 import { StatCounter } from '../ui/StatCounter'
 import { Badge } from '../ui/Badge'
 
+// dataset_stats.json: { n_sessions, n_features, n_samples_per_session, session_duration_h, sample_rate_min, ... }
 export function HeroSection() {
   const { data } = useData('dataset_stats.json')
+
+  // sample_rate_min is minutes-per-sample; convert to Hz = 1 / (sample_rate_min * 60)
+  const sampleRateHz = data?.sample_rate_min ? (1 / (data.sample_rate_min * 60)).toFixed(3) : null
 
   return (
     <section id="hero" className="min-h-[60vh] flex flex-col justify-center py-20">
@@ -35,7 +39,7 @@ export function HeroSection() {
             <StatCounter value={data.n_sessions} label="Sessions" color="#6366f1" />
             <StatCounter value={data.n_features} label="Features" color="#22d3ee" />
             <StatCounter value={data.n_samples_per_session} label="Samples / Session" color="#4ade80" />
-            <StatCounter value={data.sampling_rate_hz} label="Hz Sample Rate" color="#fb923c" decimals={1} />
+            <StatCounter value={data.session_duration_h} label="Hours / Session" color="#fb923c" decimals={0} />
           </div>
         )}
       </motion.div>

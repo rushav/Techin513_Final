@@ -9,8 +9,8 @@ export function FFTChart({ fftData, signal = 'temperature', height = 280 }) {
     const d = fftData[signal]
     if (!d) return []
     return [{
-      x: d.freqs,
-      y: d.power,
+      x: d.freqs_mhz ?? d.freqs,
+      y: d.psd ?? d.power,
       type: 'scatter',
       mode: 'lines',
       fill: 'tozeroy',
@@ -22,7 +22,7 @@ export function FFTChart({ fftData, signal = 'temperature', height = 280 }) {
 
   const layout = useMemo(() => mergeLayout({
     height,
-    xaxis: { title: { text: 'Frequency (cycles / hour)' }, type: 'log' },
+    xaxis: { title: { text: 'Frequency (mHz)' }, type: 'log' },
     yaxis: { title: { text: 'Power Spectral Density' } },
   }), [height])
 

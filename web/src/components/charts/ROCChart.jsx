@@ -1,20 +1,17 @@
 import { useMemo } from 'react'
 import { PlotlyChart } from './PlotlyChart'
 import { mergeLayout } from '../../utils/plotlyConfig'
-import { CLASS_COLORS } from '../../utils/colors'
-
-const CLASS_LABELS = ['Good', 'Moderate', 'Poor']
 
 export function ROCChart({ rocData, height = 300 }) {
   const data = useMemo(() => {
-    if (!rocData) return []
-    const traces = rocData.map((c, i) => ({
+    const curves = rocData?.curves ?? []
+    if (!curves.length) return []
+    const traces = curves.map(c => ({
       x: c.fpr, y: c.tpr,
       type: 'scatter', mode: 'lines',
-      name: `${CLASS_LABELS[i]} (AUC=${c.auc.toFixed(2)})`,
-      line: { color: CLASS_COLORS[i], width: 2 },
+      name: `${c.class} (AUC=${c.auc?.toFixed(2)})`,
+      line: { color: c.color, width: 2 },
     }))
-    // Diagonal
     traces.push({
       x: [0, 1], y: [0, 1],
       type: 'scatter', mode: 'lines',

@@ -4,22 +4,25 @@ import { Card, SectionHeader } from '../ui/Card'
 import { FeatureImportance } from '../charts/FeatureImportance'
 import { DistributionChart } from '../charts/DistributionChart'
 
-const FEATURE_OPTIONS = [
-  'temp_mean', 'temp_std', 'light_mean', 'light_std',
-  'humidity_mean', 'humidity_std', 'noise_mean', 'noise_std',
-  'temp_trend', 'light_trend',
+// distribution_data.json has keys: sleep_efficiency, sleep_duration_h, awakenings, sleep_score, temperature_mean
+const DIST_FEATURES = [
+  { key: 'sleep_efficiency',  label: 'Sleep Efficiency' },
+  { key: 'sleep_duration_h',  label: 'Sleep Duration (h)' },
+  { key: 'awakenings',        label: 'Awakenings' },
+  { key: 'sleep_score',       label: 'Sleep Score' },
+  { key: 'temperature_mean',  label: 'Temperature Mean' },
 ]
 
 export function FeaturesSection() {
   const { data: featData } = useData('feature_importance.json')
   const { data: distData } = useData('distribution_data.json')
-  const [activeFeat, setActiveFeat] = useState('temp_mean')
+  const [activeFeat, setActiveFeat] = useState('sleep_score')
 
   return (
     <section id="features" className="py-16 scroll-mt-6">
       <SectionHeader
         title="Feature Extraction"
-        subtitle="We extract 20 statistical and spectral features from each filtered signal channel: mean, standard deviation, min/max, skewness, kurtosis, linear trend slope, dominant frequency, and spectral entropy. These form the feature matrix for ML training."
+        subtitle="We extract statistical and spectral features from each filtered signal channel: mean, standard deviation, min/max, skewness, kurtosis, linear trend slope, dominant frequency, and spectral entropy. These 20+ features form the ML input matrix."
       />
 
       <div className="grid lg:grid-cols-2 gap-6 mb-6">
@@ -29,31 +32,34 @@ export function FeaturesSection() {
         </Card>
 
         <Card>
-          <h3 className="text-sm font-semibold text-slate-300 mb-3">Distribution by Quality Class</h3>
+          <h3 className="text-sm font-semibold text-slate-300 mb-3">Label Distribution — Synthetic vs. Reference</h3>
           <div className="flex flex-wrap gap-1.5 mb-3">
-            {FEATURE_OPTIONS.map(f => (
+            {DIST_FEATURES.map(({ key, label }) => (
               <button
-                key={f}
-                onClick={() => setActiveFeat(f)}
+                key={key}
+                onClick={() => setActiveFeat(key)}
                 className={`pill text-xs transition-all ${
-                  activeFeat === f
+                  activeFeat === key
                     ? 'border-primary text-primary bg-primary/10'
                     : 'border-border text-slate-500 hover:border-slate-500 hover:text-slate-300'
                 }`}
               >
-                {f}
+                {label}
               </button>
             ))}
           </div>
           <DistributionChart distData={distData} feature={activeFeat} height={260} />
+          <p className="text-xs text-slate-500 mt-2">
+            Synthetic KDE (solid) vs. reference distribution (dashed). Close alignment validates that
+            our synthetic generator reproduces realistic sleep label distributions.
+          </p>
         </Card>
       </div>
 
       <div className="callout">
-        <strong className="text-slate-200">Key insight:</strong> Temperature mean and standard deviation
-        are the top two predictors, followed by light mean. This reflects the physiological importance
-        of thermoregulation during sleep — a bedroom temperature between 18–22°C is associated with
-        deeper, higher-quality sleep.
+        <strong className="text-slate-200">Key insight:</strong> Temperature-derived features dominate
+        importance, consistent with thermoregulation's critical role in sleep quality. Light level
+        features rank second, reflecting disruption from nocturnal light exposure.
       </div>
     </section>
   )
