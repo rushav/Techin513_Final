@@ -1,7 +1,7 @@
 check,description,stat,p_value,pass,detail
-optimal_temp_better_sleep,T(18–21°C) sessions have higher efficiency than T outside range,10.3242,0.0,True,"opt mean=0.823, non-opt mean=0.719"
-light_events_reduce_efficiency,Light events negatively correlated with sleep efficiency,-0.5567,0.0,True,Pearson r=-0.5567
-awakenings_in_range,"Mean awakenings in published range [1.5, 4.0]",2.934,,True,mean awakenings=2.934
-noise_events_increase_awakenings,Noise events positively correlated with awakenings,0.6453,0.0,True,Pearson r=0.6453
-efficiency_healthy_range,"≥ 50% of sessions have efficiency in healthy range [0.75, 0.95]",0.568,,True,"56.8% of sessions in [0.75, 0.95]"
-good_class_better_than_poor,Good quality class has higher efficiency than poor class,17.9418,0.0,True,"good mean=0.862, poor mean=0.666"
+optimal_temp_better_sleep,T(18–21°C) sessions have higher efficiency than T outside range,28.4194,0.0,True,"opt mean=0.863, non-opt mean=0.735"
+light_events_reduce_efficiency,Light events negatively correlated with sleep efficiency,-0.3864,0.0,True,Pearson r=-0.3864
+awakenings_in_range,"Mean awakenings in published range [1.5, 4.0]",2.441,,True,mean awakenings=2.441
+noise_events_increase_awakenings,Noise events positively correlated with awakenings,0.3619,0.0,True,Pearson r=0.3619
+efficiency_healthy_range,"≥ 50% of sessions have efficiency in healthy range [0.75, 0.95]",0.6468,,True,"64.7% of sessions in [0.75, 0.95]"
+good_class_better_than_poor,Good quality class has higher efficiency than poor class,29.2023,0.0,True,"good mean=0.888, poor mean=0.730"

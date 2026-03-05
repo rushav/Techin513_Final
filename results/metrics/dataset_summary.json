@@ -1,44 +1,44 @@
 {
-  "n_sessions": 500,
+  "n_sessions": 2500,
   "n_features": 34,
   "n_labels": 4,
   "seed": 42,
   "dataset_path": "/home/rushav/Desktop/Techin513_Final/data/synthetic_sleep_dataset.csv",
   "label_stats": {
     "sleep_efficiency": {
-      "mean": 0.7715,
-      "std": 0.1239,
+      "mean": 0.8053,
+      "std": 0.1286,
       "min": 0.5,
-      "max": 0.94
+      "max": 0.96
     },
     "sleep_duration_h": {
-      "mean": 6.1723,
-      "std": 1.0034,
+      "mean": 6.8455,
+      "std": 1.134,
       "min": 4.0,
-      "max": 8.148
+      "max": 8.5
     },
     "awakenings": {
-      "mean": 2.934,
-      "std": 1.412,
+      "mean": 2.4412,
+      "std": 1.1489,
       "min": 1.0,
       "max": 6.0
     },
     "sleep_score": {
-      "mean": 78.1596,
-      "std": 11.0521,
-      "min": 51.57,
-      "max": 99.64
+      "mean": 82.82,
+      "std": 10.9539,
+      "min": 51.05,
+      "max": 100.0
     }
   },
   "season_counts": {
-    "winter": 125,
-    "spring": 125,
-    "summer": 125,
-    "autumn": 125
+    "winter": 625,
+    "spring": 625,
+    "summer": 625,
+    "autumn": 625
   },
   "quality_counts": {
-    "poor": 168,
-    "moderate": 168,
-    "good": 164
+    "poor": 836,
+    "moderate": 832,
+    "good": 832
   }
 }

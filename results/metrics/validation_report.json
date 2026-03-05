@@ -1,74 +1,74 @@
 {
   "tier1_ks_tests": {
     "n_tests": 6,
-    "n_pass": 1,
-    "pass_rate": 0.167,
+    "n_pass": 0,
+    "pass_rate": 0.0,
     "results": [
       {
         "variable": "sleep_efficiency",
-        "ks_stat": 0.192,
+        "ks_stat": 0.1156,
         "p_value": 0.0,
         "pass": false,
-        "synthetic_mean": 0.7715,
-        "synthetic_std": 0.1238,
+        "synthetic_mean": 0.8053,
+        "synthetic_std": 0.1286,
         "reference_mean": 0.805,
-        "reference_std": 0.075
+        "reference_std": 0.12
       },
       {
         "variable": "sleep_duration_h",
-        "ks_stat": 0.232,
+        "ks_stat": 0.097,
         "p_value": 0.0,
         "pass": false,
-        "synthetic_mean": 6.1723,
-        "synthetic_std": 1.0024,
+        "synthetic_mean": 6.8455,
+        "synthetic_std": 1.1338,
         "reference_mean": 6.8,
-        "reference_std": 0.9
+        "reference_std": 1.1
       },
       {
         "variable": "awakenings",
-        "ks_stat": 0.219,
+        "ks_stat": 0.1839,
         "p_value": 0.0,
         "pass": false,
-        "synthetic_mean": 2.934,
-        "synthetic_std": 1.4105,
+        "synthetic_mean": 2.4412,
+        "synthetic_std": 1.1486,
         "reference_mean": 2.5,
-        "reference_std": 2.0
+        "reference_std": 1.5
       },
       {
         "variable": "sleep_score",
-        "ks_stat": 0.3515,
+        "ks_stat": 0.1079,
         "p_value": 0.0,
         "pass": false,
-        "synthetic_mean": 78.1596,
-        "synthetic_std": 11.0411,
-        "reference_mean": 68.0,
-        "reference_std": 12.0
+        "synthetic_mean": 82.82,
+        "synthetic_std": 10.9517,
+        "reference_mean": 82.0,
+        "reference_std": 10.0
       },
       {
         "variable": "temperature_mean",
-        "ks_stat": 0.0625,
-        "p_value": 0.0857,
-        "pass": true,
-        "synthetic_mean": 19.8956,
-        "synthetic_std": 2.1631,
-        "reference_mean": 19.8,
-        "reference_std": 2.5
+        "ks_stat": 0.0637,
+        "p_value": 0.0002,
+        "pass": false,
+        "synthetic_mean": 20.6229,
+        "synthetic_std": 1.8551,
+        "reference_mean": 20.5,
+        "reference_std": 2.0
       },
       {
         "variable": "light_n_events",
-        "ks_stat": 0.245,
+        "ks_stat": 0.2058,
         "p_value": 0.0,
         "pass": false,
-        "synthetic_mean": 1.73,
-        "synthetic_std": 1.6128,
-        "reference_mean": 1.8,
+        "synthetic_mean": 1.3752,
+        "synthetic_std": 1.4255,
+        "reference_mean": 1.4,
         "reference_std": 1.5
       }
     ]
   },
   "tier2_discriminability": {
     "auc_roc": 1.0,
-    "auc_std": 0.0001,
+    "auc_std": 0.0,
     "interpretation": "Strongly structured \u2014 dataset contains non-random patterns (confirms SP pipeline is effective)"
   },
   "tier3_sanity_checks": {
@@ -79,50 +79,50 @@
       {
         "check": "optimal_temp_better_sleep",
         "description": "T(18\u201321\u00b0C) sessions have higher efficiency than T outside range",
-        "stat": 10.3242,
+        "stat": 28.4194,
         "p_value": 0.0,
         "pass": true,
-        "detail": "opt mean=0.823, non-opt mean=0.719"
+        "detail": "opt mean=0.863, non-opt mean=0.735"
       },
       {
         "check": "light_events_reduce_efficiency",
         "description": "Light events negatively correlated with sleep efficiency",
-        "stat": -0.5567,
+        "stat": -0.3864,
         "p_value": 0.0,
         "pass": true,
-        "detail": "Pearson r=-0.5567"
+        "detail": "Pearson r=-0.3864"
       },
       {
         "check": "awakenings_in_range",
         "description": "Mean awakenings in published range [1.5, 4.0]",
-        "stat": 2.934,
+        "stat": 2.441,
         "p_value": NaN,
         "pass": true,
-        "detail": "mean awakenings=2.934"
+        "detail": "mean awakenings=2.441"
       },
       {
         "check": "noise_events_increase_awakenings",
         "description": "Noise events positively correlated with awakenings",
-        "stat": 0.6453,
+        "stat": 0.3619,
         "p_value": 0.0,
         "pass": true,
-        "detail": "Pearson r=0.6453"
+        "detail": "Pearson r=0.3619"
       },
       {
         "check": "efficiency_healthy_range",
         "description": "\u2265 50% of sessions have efficiency in healthy range [0.75, 0.95]",
-        "stat": 0.568,
+        "stat": 0.6468,
         "p_value": NaN,
         "pass": true,
-        "detail": "56.8% of sessions in [0.75, 0.95]"
+        "detail": "64.7% of sessions in [0.75, 0.95]"
       },
       {
         "check": "good_class_better_than_poor",
         "description": "Good quality class has higher efficiency than poor class",
-        "stat": 17.9418,
+        "stat": 29.2023,
         "p_value": 0.0,
         "pass": true,
-        "detail": "good mean=0.862, poor mean=0.666"
+        "detail": "good mean=0.888, poor mean=0.730"
       }
     ]
   }
