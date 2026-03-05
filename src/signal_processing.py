@@ -24,7 +24,7 @@ Authors: Rushav Dash, Lisa Li — TECHIN 513 Final Project
 from __future__ import annotations
 
 import numpy as np
-from scipy.signal import butter, sosfilt, welch
+from scipy.signal import butter, sosfilt, sosfilt_zi, welch
 from typing import Tuple
 
 from .utils import N_SAMPLES, SAMPLE_RATE_MIN, NYQUIST_CPM, get_logger
@@ -109,7 +109,14 @@ def apply_butterworth_lpf(
         Low-pass filtered signal.
     """
     sos = design_butterworth_lpf(cutoff_cpm, order)
-    return sosfilt(sos, signal)
+    # Initialise the filter state to the first sample value so the output
+    # tracks the signal from sample 0 without a startup transient.
+    # A zero initial condition would cause the filter to ramp up from 0
+    # over ~(1/cutoff) samples, producing physically impossible fast drifts
+    # at the beginning of each session (e.g., 3–6 °C/sample for temperature).
+    zi = sosfilt_zi(sos) * signal[0]
+    filtered, _ = sosfilt(sos, signal, zi=zi)
+    return filtered
 
 
 # ---------------------------------------------------------------------------
@@ -354,18 +361,23 @@ def generate_poisson_events(
     if rate_per_min <= 0:
         return np.array([])
 
-    # Expected number of events; draw from Poisson to get actual count
+    # Draw the correct number of events within [0, duration_min] by:
+    #   1. Sampling n ~ Poisson(λ·T) — the exact count for this window.
+    #   2. Placing the n events UNIFORMLY at random in [0, T].
+    # This is mathematically equivalent to a homogeneous Poisson process
+    # (by the order-statistics characterisation of the Poisson process) and
+    # avoids the systematic undercounting bug in the previous implementation:
+    #   The old code drew n Exp(λ) inter-arrivals and then truncated those
+    #   whose cumulative sum exceeded T.  For low-rate processes (λ·T ≈ 1–3),
+    #   many drawn events fell outside the window, so the actual event count
+    #   was only 25–65 % of the Poisson-distributed expected value.
     expected_n = rate_per_min * duration_min
     n_events = rng.poisson(expected_n)
     if n_events == 0:
         return np.array([])
 
-    # Draw inter-arrival times ~ Exp(λ) and compute cumulative sum
-    inter_arrivals = rng.exponential(scale=1.0 / rate_per_min, size=n_events)
-    arrivals = np.cumsum(inter_arrivals)
-
-    # Keep only arrivals within the session window
-    arrivals = arrivals[arrivals < duration_min]
+    # Place n_events uniformly in [0, duration_min) and sort ascending.
+    arrivals = np.sort(rng.uniform(0.0, duration_min, size=n_events))
 
     # Enforce minimum gap: drop events that are too close to the preceding one
     if min_gap_min > 0 and len(arrivals) > 1:
