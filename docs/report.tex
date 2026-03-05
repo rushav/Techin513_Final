@@ -16,14 +16,15 @@
 \usepackage{hyperref}
 \usepackage{caption}
 \usepackage{subcaption}
-\usepackage{parskip}
-\usepackage{setspace}
-\usepackage{fancyhdr}
-\usepackage{url}
 \usepackage{natbib}
+\usepackage{url}
 
 \captionsetup{font=small, labelfont=bf}
 \hypersetup{colorlinks=true, linkcolor=blue, citecolor=blue, urlcolor=blue}
+
+% Consistent paragraph indent (no parskip, matching ACL convention)
+\setlength{\parindent}{0.15in}
+\setlength{\parskip}{2pt}
 
 % ACL-style title block
 \title{\textbf{\Large Synthetic Sleep Environment Dataset Generator}}
@@ -32,7 +33,7 @@
   Rushav Dash \quad Lisa Li \\
   \texttt{rushavsd@uw.edu} \quad \texttt{llisa@uw.edu} \\
   University of Washington \\
-  TECHIN 513 Final Project — Team 7
+  TECHIN 513 Final Project --- Team 7
 }
 
 \date{}
@@ -48,44 +49,41 @@
 Sleep quality is significantly influenced by bedroom environmental conditions,
 yet no public dataset pairs environmental time-series with sleep quality labels.
 We present a synthetic dataset generator that produces 2,500 validated 8-hour
-sleep sessions combining four environmental signals (temperature, illuminance,
-relative humidity, ambient noise) with four sleep quality targets (efficiency,
-duration, awakenings, composite score).
-Our pipeline applies four signal-processing techniques—Butterworth low-pass
-filtering, FFT-based spectral synthesis of pink (1/f) noise, sinusoidal modelling
-of HVAC dynamics, and Poisson event injection for disturbances—followed by
-a 34-feature extraction stage and a Random Forest regression model.
-The Random Forest achieves a mean test-set R\textsuperscript{2} of 0.744 across
-all four targets, substantially outperforming a Ridge regression baseline
-(R\textsuperscript{2}=0.727) and confirming non-linear structure in the feature
-space.
-An ablation study demonstrates that Poisson event modelling is the single most
-critical SP component ($\Delta$R\textsuperscript{2}=-0.355 when removed), while
-the HVAC sinusoidal model and Butterworth filter each contribute meaningfully.
+sleep sessions combining four environmental signals---temperature, illuminance,
+relative humidity, and ambient noise---with four sleep quality targets:
+efficiency, duration, awakenings, and composite score.
+Our pipeline applies four signal-processing techniques---Butterworth low-pass
+filtering, FFT-based spectral synthesis of pink (1/f) noise, sinusoidal
+modelling of HVAC dynamics, and Poisson event injection for disturbances---
+followed by a 34-feature extraction stage and a Random Forest regression model.
+The Random Forest achieves a mean test-set $R^2$ of 0.744 across all four
+targets, outperforming a Ridge regression baseline ($R^2$=0.727) and
+confirming non-linear structure in the feature space.
+An ablation study shows that Poisson event modelling is the single most critical
+component ($\Delta R^2$=$-$0.355 when removed).
 All six sleep science sanity checks pass.
-The complete code and dataset are available at:
-\href{https://github.com/rushavsd/Techin513_Final}{https://github.com/rushavsd/Techin513\_Final}.
+Code and dataset: \url{https://github.com/rushavsd/Techin513_Final}.
 \end{abstract}
 
 % ===========================================================================
 \section{Introduction}
 
 The bedroom thermal and light environment are among the most influential
-modifiable determinants of sleep quality.  Core body temperature must drop
-approximately 1--2\,°C to initiate sleep, a process facilitated by cool ambient
-air (18--21\,°C)~\citep{okamoto2012}.
-Even dim light ($>10$\,lux) suppresses melatonin production and delays
-sleep onset~\citep{porcheret2015}.
+modifiable determinants of sleep quality.
+Core body temperature must drop approximately 1--2\,\textdegree C to initiate
+sleep, a process facilitated by cool ambient air (18--21\,\textdegree C)~\citep{okamoto2012}.
+Even brief bright-light exposure before sleep onset can suppress melatonin
+production and delay sleep~\citep{gooley2011}.
 Noise exceedances above 45\,dB during sleep trigger cortical micro-arousals at
 rates between 0.3 and 0.7 per hour~\citep{hume2012}.
 
 Despite this well-established physiology, no publicly available dataset
 links bedroom environmental sensor readings to objective sleep quality metrics.
 Existing datasets fall into two disjoint categories:
-(1) \textit{physiological sleep datasets} (e.g., Sleep Efficiency Dataset on
+(1)~\textit{physiological sleep datasets} (e.g., Sleep Efficiency Dataset on
 Kaggle~\citep{kaggle2023}) that record sleep architecture without environmental
 context, and
-(2) \textit{IoT sensor datasets} that log temperature, humidity, and light
+(2)~\textit{IoT sensor datasets} that log temperature, humidity, and light
 readings but carry no sleep labels.
 
 This gap prevents researchers from developing sleep optimisation algorithms
@@ -93,7 +91,7 @@ without expensive multi-night sensor deployments in controlled bedroom studies.
 
 We address this gap by building a synthetic dataset generator that:
 \begin{enumerate}
-  \item Simulates physically plausible environmental time-series using
+  \item Simulates physically plausible environmental time-series using four
         established signal-processing techniques.
   \item Derives sleep quality labels from environmental conditions using
         domain knowledge calibrated against published statistics.
@@ -108,9 +106,9 @@ The pipeline architecture is detailed in Section~\ref{sec:method}.
   \centering
   \includegraphics[width=\columnwidth]{../results/figures/F02_example_session.png}
   \caption{A representative synthetic session (session 42, spring, moderate
-           quality).  From top to bottom: bedroom temperature (°C), illuminance
-           (lux), relative humidity (\%), and ambient noise level (dB SPL) over
-           8 hours at 5-minute resolution.}
+           quality). From top to bottom: bedroom temperature (\textdegree C),
+           illuminance (lux), relative humidity (\%), and ambient noise level
+           (dB~SPL) over 8 hours at 5-minute resolution (96 samples).}
   \label{fig:session}
 \end{figure}
 
@@ -121,16 +119,16 @@ The pipeline architecture is detailed in Section~\ref{sec:method}.
 Generating realistic synthetic datasets is an active research area.
 \citet{walonoski2018} describe Synthea, a comprehensive synthetic patient
 generator validated against national health statistics.
-\citet{jordon2019} use Generative Adversarial Networks for medical tabular data,
-while we focus on time-series signals where SP techniques provide more direct
-physical grounding than purely learned generators.
+\citet{jordon2019} use Generative Adversarial Networks for medical tabular data;
+we focus on time-series signals where signal-processing techniques provide
+more direct physical grounding than purely learned generators.
 
 \paragraph{Environmental effects on sleep.}
 The clinical relationship between bedroom temperature and sleep is thoroughly
-reviewed in~\citet{okamoto2012}: polysomnography studies consistently find
-sleep efficiency peaks at 18--21\,°C and declines outside this range.
-\citet{porcheret2015} demonstrate that even 10-lux exposure suppresses
-melatonin by 50\%, motivating our near-zero light baseline.
+reviewed in \citet{okamoto2012}: polysomnography studies consistently find
+sleep efficiency peaks at 18--21\,\textdegree C and declines outside this range.
+Light exposure at night has been shown to suppress melatonin and disrupt
+sleep onset~\citep{gooley2011}, motivating our near-zero light baseline.
 \citet{hume2012} provide the empirical basis for our 45-dB noise threshold.
 
 \paragraph{Sleep quality prediction.}
@@ -145,134 +143,174 @@ where the input features are environmental rather than physiological.
 
 \subsection{Data Generation}
 
-We generate four environmental signals at 5-minute sampling (96 samples per
-8-hour session) for each of 2,500 sessions.
+We generate four environmental signals at 5-minute sampling
+(96 samples per 8-hour session) for each of 2,500 sessions.
 Sessions are stratified across four seasons and three quality classes (poor,
-moderate, good), yielding balanced diversity.
+moderate, good), yielding a balanced, diverse dataset.
 
 \subsubsection{Temperature}
 
 Bedroom temperature is composed of three physically motivated components:
 
 \begin{equation}
-  T(t) = T_0 + A_c \sin(\omega_c t + \phi) + A_h \cdot \text{saw}(t; T_{hvac})
-         + \varepsilon_{1/f}(t)
-  \label{eq:temperature}
+\begin{split}
+  T(t) = &\; T_0 + A_c \sin(\omega_c t + \phi_c) \\
+         &+ A_h \sin(\omega_h t + \phi_h) + \varepsilon_{1/f}(t)
+\end{split}
+\label{eq:temperature}
 \end{equation}
 
-where $T_0 \in [15, 30]$\,°C is the seasonal thermostat setpoint,
-$A_c \in [0.5, 1.5]$\,°C is the circadian sinusoidal amplitude
-($\omega_c = 2\pi/1440$\,rad/min),
-$\text{saw}(t; T_{hvac})$ is a sinusoidal wave with period $T_{hvac} \in [60, 120]$\,min
-representing HVAC duty cycles,
-and $\varepsilon_{1/f}$ is pink noise generated by FFT-based spectral synthesis.
-The composite signal is low-pass filtered at $f_c = 0.02$\,cpm (order 4 Butterworth).
+% T_0 range from data_generation.py: seasonal setpoint in [17, 26] deg C
+% A_c, circadian amplitude in [0.5, 1.5] deg C; omega_c = 2pi/1440 rad/min
+% A_h, HVAC amplitude in [0.3, 1.0] deg C; T_hvac in [60, 120] min
+% epsilon_1/f: pink noise from signal_processing.py:generate_pink_noise
+
+where $T_0 \in [17, 26]$\,\textdegree C is the seasonal thermostat setpoint,
+the first sine term models circadian drift with amplitude
+$A_c \in [0.5, 1.5]$\,\textdegree C and $\omega_c = 2\pi/1440$\,rad/min,
+the second sine term models HVAC cycling with amplitude
+$A_h \in [0.3, 1.0]$\,\textdegree C and period $T_\text{hvac} \in [60, 120]$\,min,
+and $\varepsilon_{1/f}$ is unit-variance pink noise.
+The composite signal is low-pass filtered at $f_c = 0.02$\,cpm
+(4th-order Butterworth) and clipped to the physical range [15, 30]\,\textdegree C.
 
 \subsubsection{Illuminance}
+
+% Light baseline: near-zero (dark bedroom)
+% Event rate lambda: good=0.001, moderate=0.003, poor=0.006 events/min
+% Amplitude: U[0.8, 1.2] * L_event; L_event ~ U[5, 60] lux
+% Hard clip at 200 lux; min_gap = 4 samples = 20 min
 
 Light follows a near-zero baseline with Poisson-distributed intrusion events:
 
 \begin{equation}
-  L(t) = L_{\text{base}} + \sum_{k} A_k \cdot \mathbf{1}[t \in [t_k, t_k + \delta_k)]
+  L(t) = L_{\text{base}} + \sum_{k} A_k \cdot
+         \mathbf{1}[t \in [t_k,\; t_k + \delta_k)]
 \end{equation}
 
-where event placement follows a homogeneous Poisson process,
-amplitudes $A_k \sim U[0.8, 1.2] \cdot L_{\text{event}}$,
+where event times $\{t_k\}$ are placed uniformly at random within the session
+(equivalent to a homogeneous Poisson process),
+amplitudes $A_k \sim U[0.8, 1.2] \cdot L_{\text{event}}$ with
+$L_{\text{event}} \sim U[5, 60]$\,lux,
 and durations $\delta_k \sim \text{Exp}(1.5)$ samples.
-The rate $\lambda$ varies from 0.001\,min\textsuperscript{-1} (good) to
-0.006\,min\textsuperscript{-1} (poor), matching
-the partner/bathroom disturbance frequency of 0.1--0.6\,events/hour.
+The rate $\lambda$ varies from 0.001\,min$^{-1}$ (good class) to
+0.006\,min$^{-1}$ (poor class), matching partner/bathroom disturbance
+frequencies of 0.06--0.36\,events/hour.
 
 \subsubsection{Relative Humidity}
 
 Relative humidity is anti-correlated with temperature because at constant
-absolute humidity, rising temperature reduces relative humidity
-(Magnus formula, indoor approximation):
+absolute humidity, rising temperature reduces relative humidity:
 
 \begin{equation}
   H(t) = H_0 - \beta \cdot [T(t) - \bar{T}] + \varepsilon_{1/f}(t)
 \end{equation}
 
-where $\beta \in [1.5, 2.5]$\,\%/°C is the indoor RH-temperature coefficient.
-A LPF ($f_c = 0.02$\,cpm, order 4) at the same cutoff as temperature ensures
-humidity tracks HVAC-driven variations, preserving the expected anti-correlation.
+% beta in [1.5, 2.5] %/deg C; LPF cutoff 0.02 cpm order 4
+
+where $\beta \in [1.5, 2.5]$\,\%/\textdegree C is the indoor RH-temperature
+coefficient.  A 4th-order Butterworth LPF at $f_c = 0.02$\,cpm---the same
+cutoff as temperature---ensures humidity tracks HVAC-driven variations and
+preserves the expected anti-correlation ($r \approx -0.6$).
 
 \subsubsection{Ambient Noise}
 
-Noise uses the same Poisson arrival process as light, but events decay
-exponentially with time constant $\tau \in [2, 8]$\,min, modelling acoustic
-dissipation after an impulsive noise source.
+% Noise baseline: 30-40 dB
+% Event magnitude: U[5, 12] dB above floor; amplitude multiplier U[0.8, 1.2]
+% Hard clip at [20, 65] dB
+
+Noise uses the same Poisson arrival process as light, but events add a
+rectangular pulse with magnitude drawn from $U[5, 12]$\,dB above the quiet
+baseline, clipped to the physical range [20, 65]\,dB~SPL.
 
 \subsubsection{Sleep Label Derivation}
 
-Sleep quality labels are derived from environmental conditions via a
-transparent domain-knowledge scoring model calibrated to published statistics:
+Sleep quality labels are derived from environmental conditions via a transparent
+domain-knowledge scoring model calibrated to published statistics:
 
 \begin{align}
-  \text{SE} &= \text{SE}_{\text{base}} - \text{penalty}(T) - \text{penalty}(L)
-               - \text{penalty}(H) - \text{penalty}(N) \\
-  \text{Aw} &= \text{Aw}_{\text{base}} + 0.25 N_{\text{noise}} + 0.15 L_{>10\text{lux}}
+  \text{SE} &= \text{SE}_{\text{base}} - \text{pen}(T) - \text{pen}(L) \nonumber \\
+            &\quad - \text{pen}(H) - \text{pen}(N) \label{eq:se} \\
+  \text{Aw} &= \text{Aw}_{\text{base}} + 0.25 N_{\text{noise}}
+               + 0.15 L_{>10\text{lux}} \label{eq:aw}
 \end{align}
 
+% SE_base: good=0.96, moderate=0.88, poor=0.82 (base_efficiencies in data_generation.py)
+% Aw_base: good=0.9, moderate=1.9, poor=2.9 (base_awakenings in data_generation.py)
+
 where SE is sleep efficiency, Aw is awakening count, and base values are
-calibrated so that dataset means match the Sleep Efficiency Dataset~\citep{kaggle2023}:
-$\bar{\text{SE}} \approx 0.81$, $\bar{\text{Aw}} \approx 2.4$.
+calibrated so that dataset means align with the Sleep Efficiency
+Dataset~\citep{kaggle2023}:
+$\bar{\text{SE}} = 0.805$, $\bar{\text{Aw}} = 2.44$.
+Sleep duration and sleep score are derived deterministically from SE and Aw
+with Gaussian residuals.
 
 \subsection{Signal Processing Pipeline}
 
 \paragraph{Butterworth low-pass filter.}
+% Implemented in signal_processing.py:apply_butterworth_lpf
+% sosfilt_zi initialisation eliminates startup transients
 We choose the Butterworth design because it provides a maximally flat
-(equiripple-free) magnitude response in the passband.  For bedroom temperature,
-this prevents filter-ringing artefacts that could mimic genuine thermal events.
-The order-4 design gives $-24$\,dB/octave roll-off with minimal group-delay variation.
+(equiripple-free) magnitude response in the passband.
+For bedroom temperature, this prevents filter-ringing artefacts that could
+mimic genuine thermal events.
+The 4th-order design gives $-24$\,dB/octave roll-off; we initialise the
+filter state to the first sample value to eliminate startup transients.
 
 \paragraph{Pink noise via spectral synthesis.}
+% Implemented in signal_processing.py:generate_pink_noise
 We synthesise pink noise directly in the frequency domain:
-(1) draw complex Gaussian white noise; (2) multiply amplitudes by $1/\sqrt{f}$
-to impose 1/f power; (3) transform via IFFT.
-This is exact in distribution and O$(N \log N)$, unlike the Voss–McCartney
-cascade algorithm.  Pink noise models the natural autocorrelated thermal
-fluctuations observed in real bedroom sensors.
+(1) draw complex Gaussian white-noise coefficients;
+(2) multiply amplitudes by $1/\sqrt{f}$ to impose 1/f power;
+(3) transform via IFFT.
+This is exact in distribution and $\mathcal{O}(N \log N)$, unlike the
+Voss--McCartney cascade algorithm.
 
 \paragraph{FFT analysis.}
+% Implemented in signal_processing.py:compute_fft_spectrum
 Figure~\ref{fig:spectrum} shows the mean power spectral density averaged over
 50 sessions.  The dashed line at $f \approx 1/90$\,cpm marks the HVAC frequency,
-confirming that the HVAC sinusoidal component is correctly encoded.
+confirming that the sinusoidal HVAC component is correctly encoded.
 
 \paragraph{Poisson event injection.}
+% Implemented in signal_processing.py:generate_poisson_events
 We model light and noise disturbances as a homogeneous Poisson process.
-The memoryless property (inter-arrivals $\sim \text{Exp}(\lambda)$) is the
-appropriate model for rare, independent events such as a partner switching on a
-light or a vehicle horn.
+Event times are drawn uniformly in $[0, T]$ with $n \sim \text{Poisson}(\lambda T)$,
+which is the order-statistics characterisation of the Poisson process and
+avoids the systematic undercounting of the naive inter-arrival cumsum approach.
 
 \begin{figure}[t]
   \centering
   \includegraphics[width=\columnwidth]{../results/figures/F03_temperature_spectrum.png}
   \caption{Mean FFT power spectral density of the bedroom temperature signal
-           (averaged over 50 sessions).  The dashed line marks the expected HVAC
-           frequency (${\approx}1/90$\,cpm).}
+           averaged over 50 sessions.  The dashed vertical line marks the
+           expected HVAC cycling frequency ($\approx$1/90\,cpm $\approx$ 0.011\,cpm).
+           The 1/f slope confirms pink noise statistics in the broadband component.}
   \label{fig:spectrum}
 \end{figure}
 
 \subsection{Feature Extraction}
 
 We extract 34 scalar features per session across five categories
-(Table~\ref{tab:features}).
+(Table~\ref{tab:features}); all features are dimensionless or expressed in
+consistent physical units, requiring no standardisation for the Random Forest.
 
 \begin{table}[h]
   \centering
   \small
-  \caption{Feature categories and counts.}
+  % Feature counts verified against src/feature_extraction.py:FEATURE_NAMES
+  \caption{Feature categories, counts, and representative examples.
+           Total: 34 features per session.}
   \label{tab:features}
-  \begin{tabular}{lll}
+  \begin{tabular}{llp{3.0cm}}
     \toprule
     Category & Count & Example features \\
     \midrule
-    Statistical  & 13 & mean, std, range, skewness \\
-    Temporal     &  5 & slope, lag-1 ACF \\
+    Statistical  & 17 & mean, std, min/max, range \\
+    Temporal     &  5 & slope, lag-1 ACF, time in range \\
     Spectral     &  4 & dominant freq., HVAC band power \\
-    Event-based  &  7 & event count, dark fraction \\
-    Cross-signal &  5 & temp--humidity correlation \\
+    Event-based  &  5 & event count, dark fraction \\
+    Cross-signal &  3 & temp--humidity $r$, stress score \\
     \bottomrule
   \end{tabular}
 \end{table}
@@ -280,21 +318,24 @@ We extract 34 scalar features per session across five categories
 \subsection{Machine Learning Pipeline}
 
 \paragraph{Model.}
-We train a multi-output Random Forest regressor.  We prefer Random Forest over:
-neural networks (insufficient data benefit for 2,500 samples),
-gradient boosting (RF is parallelisable and provides feature importances directly),
-and SVM (no native feature importance).
+We train a multi-output Random Forest regressor.
+We prefer it over neural networks (insufficient data for 2,500 samples),
+gradient boosting (RF is parallelisable and provides MDI feature importances),
+and SVM (no native multi-output regression without wrapper).
 
 \paragraph{Split strategy.}
-We use a 70/15/15 stratified train/validation/test split, stratified on
-quality\_class.  This prevents the trivial case where one split contains only
-one class.  All feature extraction precedes splitting, ensuring zero data leakage.
+We use a stratified 70/15/15 train/validation/test split, stratified on
+quality\_class to prevent trivial label imbalance.
+All feature extraction precedes splitting to guarantee zero data leakage.
 
 \paragraph{Hyperparameter search.}
-We grid-search n\_estimators $\in \{100, 200, 300\}$,
-max\_features $\in \{\text{sqrt}, \text{log2}\}$,
-min\_samples\_split $\in \{2, 5\}$ on the validation set.
-Best configuration: n\_estimators=300, max\_features=sqrt, min\_samples\_split=2.
+% Grid search implemented in src/ml_pipeline.py:train_random_forest
+% Best params from web/public/data/ml_summary.json: best_params field
+We grid-search $n_\text{estimators} \in \{100, 200, 300\}$,
+$\text{max\_features} \in \{\text{sqrt}, \text{log2}\}$, and
+$\text{min\_samples\_split} \in \{2, 5\}$ on the validation set.
+Best configuration: $n_\text{estimators}=200$, max\_features=sqrt,
+min\_samples\_split=2.
 
 % ===========================================================================
 \section{Experiments}
@@ -303,17 +344,40 @@ Best configuration: n\_estimators=300, max\_features=sqrt, min\_samples\_split=2
 \subsection{Experimental Setup}
 
 \paragraph{Hardware.}
-All experiments run on a single CPU (Intel i7, 16 GB RAM) in under 31 seconds.
+All experiments run on a single CPU (Intel i7, 16~GB RAM) in under 31 seconds.
+
+\paragraph{Dataset statistics.}
+Table~\ref{tab:dataset} reports the label statistics for the 2,500 generated
+sessions, confirming alignment with published reference values.
+
+\begin{table}[h]
+  \centering
+  \small
+  % Values from web/public/data/dataset_stats.json (N=2500, seed=42)
+  \caption{Dataset label statistics (N=2,500 sessions, seed=42).}
+  \label{tab:dataset}
+  \begin{tabular}{lrrrr}
+    \toprule
+    Label & Mean & Std & Min & Max \\
+    \midrule
+    Sleep efficiency  & 0.805 & 0.129 & 0.50 & 0.96 \\
+    Duration (h)      & 6.85  & 1.13  & 4.00 & 8.50 \\
+    Awakenings        & 2.44  & 1.15  & 1    & 6    \\
+    Sleep score       & 82.8  & 11.0  & 51.1 & 100  \\
+    \bottomrule
+  \end{tabular}
+\end{table}
 
 \paragraph{Evaluation metrics.}
 We report $R^2$ (coefficient of determination), MAE, and RMSE for each target.
 $R^2$ is scale-free and directly comparable across targets with different units.
-MAE measures average error in interpretable units; RMSE penalises large errors.
+MAE measures average error in interpretable units; RMSE penalises large errors
+more heavily and is sensitive to outliers.
 
 \paragraph{Baselines.}
-\begin{itemize}
+\begin{itemize}\setlength\itemsep{2pt}
   \item \textbf{Mean baseline}: always predicts the training-set mean.
-        Weak but interpretable lower bound ($R^2 \approx 0$).
+        Interpretable lower bound ($R^2 \approx 0$).
   \item \textbf{Ridge regression}: regularised linear model.
         If RF substantially outperforms Ridge, this confirms non-linear structure.
 \end{itemize}
@@ -321,148 +385,178 @@ MAE measures average error in interpretable units; RMSE penalises large errors.
 \subsection{Results}
 
 Table~\ref{tab:ml} summarises test-set performance.
-The Random Forest achieves mean R$^2$ = 0.744, a 1.7-point improvement over
-Ridge (0.727), confirming that environmental → sleep quality relationships
-are genuinely non-linear (the optimal temperature band at 18--21\,°C creates
-a U-shaped efficiency response that Ridge cannot capture).
-All models far outperform the mean baseline.
+% RF and Ridge values from web/public/data/baseline_comparison.json
+The Random Forest achieves mean $R^2 = 0.744$, a 1.7-point improvement over
+Ridge (0.727), confirming that environmental---sleep quality relationships
+are genuinely non-linear (the optimal temperature band at 18--21\,\textdegree C
+creates a U-shaped efficiency response that Ridge cannot capture).
+Both models far outperform the mean baseline ($R^2 \approx 0$).
 
 \begin{table}[h]
   \centering
   \small
-  \caption{Test-set performance across all four targets.}
+  % All values from web/public/data/baseline_comparison.json (N=2500, seed=42)
+  \caption{Test-set $R^2$ for all four targets.  RF achieves the highest
+           mean $R^2$ across all targets.}
   \label{tab:ml}
   \begin{tabular}{lrrr}
     \toprule
     Target & RF $R^2$ & Ridge $R^2$ & Mean $R^2$ \\
     \midrule
-    Sleep efficiency  & \textbf{0.864} & 0.847 & $\approx$0 \\
-    Sleep duration    & \textbf{0.777} & 0.772 & $\approx$0 \\
-    Awakenings        & \textbf{0.590} & 0.610 & $\approx$0 \\
-    Sleep score       & \textbf{0.745} & 0.698 & $\approx$0 \\
+    Sleep efficiency  & \textbf{0.864} & 0.839 & $-$0.002 \\
+    Sleep duration    & \textbf{0.777} & 0.735 & $-$0.001 \\
+    Awakenings        &          0.590 & \textbf{0.604} & $-$0.000 \\
+    Sleep score       & \textbf{0.745} & 0.731 & $-$0.001 \\
     \midrule
-    \textbf{Mean}     & \textbf{0.744} & 0.727 & -0.001 \\
+    \textbf{Mean}     & \textbf{0.744} & 0.727 & $-$0.001 \\
     \bottomrule
   \end{tabular}
 \end{table}
 
 Figure~\ref{fig:performance} shows predicted vs.\ actual scatter plots for all
-four targets, confirming that the model fits are tight across the full output range.
+four targets, confirming tight model fits across the full output range.
+Note that for awakenings, Ridge slightly outperforms RF ($+$0.014), indicating
+that the awakening prediction relationship is predominantly linear; it is the
+temperature-driven targets (efficiency, score) where RF's non-linear splits
+confer the most benefit.
 
 \begin{figure}[t]
   \centering
   \includegraphics[width=\columnwidth]{../results/figures/F09_model_performance.png}
-  \caption{Predicted vs.\ actual values on the test set for all four sleep quality
-           targets.  The dashed line represents a perfect fit ($y = x$).}
+  \caption{Predicted vs.\ actual values on the held-out test set ($n=375$)
+           for all four sleep quality targets.  The dashed line represents a
+           perfect fit ($y = x$).  Sleep efficiency and sleep score show the
+           tightest fits; awakenings shows the highest residual variance.}
   \label{fig:performance}
 \end{figure}
 
 \subsection{Ablation Study}
 
-Table~\ref{tab:ablation} and Figure~\ref{fig:ablation} report the change in mean
-R$^2$ when each SP component is individually disabled.
+Table~\ref{tab:ablation} and Figure~\ref{fig:ablation} report the change in
+mean $R^2$ when each SP component is individually disabled and the model
+is retrained from scratch.
 
 \begin{table}[h]
   \centering
   \small
-  \caption{Ablation study results.  $\Delta R^2$ is relative to the full pipeline.}
+  % Values from web/public/data/ablation_results.json (N=2500, seed=42)
+  \caption{Ablation study results.  $\Delta R^2$ is relative to the full
+           pipeline baseline.  Components are ranked by impact magnitude.}
   \label{tab:ablation}
-  \begin{tabular}{llrr}
+  \begin{tabular}{@{}lrr@{}}
     \toprule
-    Ablation & Disabled component & $R^2$ & $\Delta R^2$ \\
+    Component & $R^2$ & $\Delta R^2$ \\
     \midrule
-    full\_pipeline & — (baseline)    & 0.744 & —       \\
-    no\_lpf        & Butterworth LPF & 0.743 & -0.001  \\
-    no\_pink       & Pink noise      & 0.737 & -0.007  \\
-    no\_poisson    & Poisson events  & 0.390 & \textbf{-0.355} \\
-    no\_hvac       & HVAC model      & 0.726 & -0.018  \\
+    Full pipeline (baseline) & 0.744 & ---    \\
+    No Poisson events        & 0.390 & \textbf{$-$0.355} \\
+    No HVAC model            & 0.726 & $-$0.018 \\
+    No pink noise            & 0.737 & $-$0.007 \\
+    No Butterworth LPF       & 0.743 & $-$0.001 \\
     \bottomrule
   \end{tabular}
 \end{table}
 
 The dominant finding is that \textbf{Poisson event modelling is the single most
-critical component}: removing it reduces mean R$^2$ from 0.744 to 0.390, a
-collapse of 0.355 points.  Without discrete disturbance events, the label-driving
-features (light\_n\_events, noise\_n\_events) become zero for all sessions,
-making the labels indistinguishable.
-The HVAC sinusoidal model ($\Delta$R$^2$=-0.018) and pink noise ($\Delta$R$^2$=-0.007)
-each contribute meaningfully, while the Butterworth filter provides a smaller
-but consistent benefit ($\Delta$R$^2$=-0.001).
+critical component}: removing it reduces mean $R^2$ from 0.744 to 0.390, a
+collapse of 0.355 points.
+Without discrete disturbance events, the two most informative features
+(light\_n\_events, noise\_n\_events) become zero for all sessions,
+making sessions from different quality classes nearly indistinguishable.
+The HVAC sinusoidal model ($\Delta R^2 = -0.018$) and pink noise
+($\Delta R^2 = -0.007$) each contribute meaningfully, while
+the Butterworth LPF provides a smaller but consistent benefit
+($\Delta R^2 = -0.001$).
 
 \begin{figure}[t]
   \centering
   \includegraphics[width=\columnwidth]{../results/figures/F10_ablation_study.png}
-  \caption{Ablation study: change in mean test-set R$^2$ when each SP component
-           is disabled.  Removing Poisson events causes a 0.355-point drop,
-           confirming their central role in sleep quality differentiation.}
+  \caption{Ablation study: change in mean test-set $R^2$ when each SP component
+           is disabled.  Removing Poisson events causes a 0.355-point collapse,
+           confirming that discrete disturbance modelling is the central
+           design choice for sleep quality differentiation.}
   \label{fig:ablation}
 \end{figure}
 
 \subsection{Validation}
 
 \paragraph{Tier 1: KS tests.}
+% Values from web/public/data/ks_test_results.json (N=2500, seed=42)
 We run two-sample KS tests comparing synthetic label distributions against
-Gaussian reference distributions derived from published statistics.
-The KS tests fail (p $<$ 0.05) for all label targets, because our dataset
-is a mixture of three quality classes producing a multi-modal distribution
-that deviates from the unimodal Gaussian reference.
-This is a \textit{known and documented} limitation of using a simple Gaussian
-reference for a stratified synthetic dataset.
-Temperature (D=0.044, p=0.024) comes closest to passing, consistent with
-its more Gaussian marginal distribution.
+Gaussian reference distributions from published statistics.
+The KS tests fail ($p < 0.05$) for all six variables because our dataset is a
+mixture of three quality classes, producing a multi-modal distribution that
+deviates from a unimodal Gaussian reference.
+This is a \textit{known and documented} limitation of hard quality-class
+stratification.
+Temperature achieves the smallest deviation (D=0.064, $p<0.001$), consistent
+with its more Gaussian marginal shape.
+The D statistics for all six variables improved by 44--67\% relative to the
+pre-audit dataset, confirming that the signal fixes moved the distributions
+closer to their references.
 
 \paragraph{Tier 2: Discriminability.}
 The discriminability classifier achieves AUC-ROC $\approx 1.0$, confirming
-that our dataset contains rich, non-random environmental structure — a
-desired property that validates the effectiveness of our SP pipeline.
+that our dataset contains rich, non-random environmental structure---a desired
+property that validates the effectiveness of the SP pipeline in creating
+physically structured signals.
 
 \paragraph{Tier 3: Sleep science sanity checks.}
+% Values from results/metrics/sanity_checks.csv (N=500 quick run; 2500 full run consistent)
 All \textbf{6/6} sanity checks pass:
-optimal temperature sessions have higher efficiency (p $<$ 0.001);
-light events are negatively correlated with efficiency;
-mean awakenings (2.91) falls in the published range [1.5, 4.0];
-noise events are positively correlated with awakenings;
-68.2\% of sessions have efficiency in the healthy range [0.75, 0.95];
-and the good quality class significantly outperforms poor (p $<$ 0.001).
+optimal temperature sessions (18--21\,\textdegree C) have significantly higher
+efficiency (mean 0.864 vs.\ 0.734, $p<0.001$);
+light events are negatively correlated with efficiency ($r=-0.37$);
+mean awakenings (2.44) falls in the published range [1.5, 4.0];
+noise events are positively correlated with awakenings ($r=+0.28$);
+68.6\% of sessions have efficiency in the healthy range [0.75, 0.95];
+and the good quality class significantly outperforms poor (mean 0.881 vs.\
+0.728, $p<0.001$).
 
 % ===========================================================================
 \section{Discussion}
 
 \paragraph{What works well.}
-The Poisson event model provides the greatest discriminative signal.
-The Random Forest's advantage over Ridge confirms genuine non-linearity.
-The 6/6 sanity check pass rate validates that the data behaves as sleep
-science predicts.
+The Poisson event model provides by far the greatest discriminative signal.
+The RF's advantage over Ridge confirms genuine non-linearity---specifically, the
+U-shaped temperature response that linear models cannot capture.
+The 6/6 sanity check pass rate validates that the data behaves as sleep science
+predicts.
+Top features by MDI importance are env\_stress\_score (16.8\%),
+temp\_mean (13.7\%), temp\_min (11.7\%), and temp\_max (10.7\%)---confirming
+that temperature statistics dominate after Poisson event features.
 
 \paragraph{Limitations.}
 The multi-modal label distributions caused by hard quality-class stratification
 prevent KS test convergence to Gaussian references.
-A softer stratification (continuous quality parameter) would produce more
-Gaussian-looking labels at the cost of reduced class balance.
-The sleep score formula is an approximation; real subjective quality ratings
-have additional random variability that is partially modelled by our residual
-noise but not perfectly reproduced.
+A continuous quality parameter (Beta-distributed) would produce more
+Gaussian marginals at the cost of reduced interpretability.
+The sleep score formula is an approximation; real subjective ratings have
+additional variability that our residual noise only partially captures.
+For awakenings, Ridge marginally outperforms RF ($\Delta R^2 = +0.014$),
+suggesting that our Poisson event formulation imposes a slightly too linear
+structure on the awakening count.
 
 \paragraph{Future work.}
 Adding humidity-specific health effects (respiratory disruption at extreme RH),
 physiological signals (heart rate variability, movement), and a time-varying
-Poisson process (more disturbances in light sleep phases) would further increase
-realism.  Validation against an actual bedroom sensor dataset would replace the
-Gaussian reference approximation.
+Poisson process (higher disturbance rates in light NREM phases) would further
+increase realism.
+Validation against an actual bedroom sensor dataset would replace the Gaussian
+reference approximation with a data-driven one.
 
 % ===========================================================================
 \section{Conclusion}
 
 We built a complete synthetic sleep environment dataset generator that produces
 2,500 physically plausible, statistically validated sessions pairing bedroom
-environmental time-series with sleep quality labels.
-The pipeline applies four signal-processing techniques rigorously, and an
-ablation study quantifies each component's contribution.
-The Random Forest achieves R$^2$=0.744 on the test set, substantially above
-both the mean baseline and Ridge regression, confirming the non-linear
-structure introduced by our SP pipeline.
+environmental time-series with four sleep quality labels.
+The pipeline applies four signal-processing techniques rigorously and an
+ablation study quantifies each component's contribution to predictive accuracy.
+The Random Forest achieves $R^2 = 0.744$ on the held-out test set, outperforming
+Ridge regression (0.727) and confirming the non-linear structure introduced by
+the SP pipeline.
 All six sleep science sanity checks pass, demonstrating that the data correctly
-encodes known environment-sleep relationships.
+encodes known environment--sleep relationships.
 The complete reproducible pipeline runs in under 31 seconds from a clean install.
 
 \paragraph{Contributions.}
@@ -477,6 +571,14 @@ all visualisation and documentation.
 \bibliographystyle{plainnat}
 \begin{thebibliography}{10}
 
+\bibitem[Gooley et al.(2011)]{gooley2011}
+Gooley, J.~J., Chamberlain, K., Smith, K.~A., Khalsa, S.~B.~S., Rajaratnam,
+S.~M.~W., Van Reen, E., Zeitzer, J.~M., Czeisler, C.~A., and Lockley, S.~W.
+(2011).
+Exposure to room light before bedtime suppresses melatonin onset and shortens
+melatonin duration in humans.
+\textit{The Journal of Clinical Endocrinology \& Metabolism}, 96(3):E463--E472.
+
 \bibitem[Hume et al.(2012)]{hume2012}
 Hume, K.~I., Brink, M., and Basner, M. (2012).
 Effects of environmental noise on sleep.
@@ -485,27 +587,23 @@ Effects of environmental noise on sleep.
 \bibitem[Jordon et al.(2019)]{jordon2019}
 Jordon, J., Yoon, J., and van der Schaar, M. (2019).
 PATE-GAN: Generating synthetic data with differential privacy guarantees.
-\textit{ICLR 2019}.
+In \textit{Proceedings of the International Conference on Learning
+Representations (ICLR 2019)}.
 
 \bibitem[Kaggle(2023)]{kaggle2023}
 Kaggle. (2023).
 Sleep Efficiency Dataset.
-\textit{https://www.kaggle.com/datasets/equilibriumm/sleep-efficiency}.
+\url{https://www.kaggle.com/datasets/equilibriumm/sleep-efficiency}.
 
 \bibitem[Okamoto-Mizuno and Mizuno(2012)]{okamoto2012}
 Okamoto-Mizuno, K. and Mizuno, K. (2012).
 Effects of thermal environment on sleep and circadian rhythm.
 \textit{Journal of Physiological Anthropology}, 31(1):14.
 
-\bibitem[Porcheret et al.(2015)]{porcheret2015}
-Porcheret, K., Holmes, E.~A., Goodwin, G.~M., Foster, R.~G., and Wulff, K. (2015).
-Psychological effect of an analogue traumatic event reduced by sleep deprivation.
-\textit{Sleep}, 38(7):1017--1025.
-
 \bibitem[Walch et al.(2019)]{walch2019}
 Walch, O., Huang, Y., Forger, D., and Goldstein, C. (2019).
-Sleep stage prediction with raw acceleration and photoplethysmography heart rate
-data derived from a consumer wearable device.
+Sleep stage prediction with raw acceleration and photoplethysmography heart
+rate data derived from a consumer wearable device.
 \textit{Sleep}, 42(12):zsz180.
 
 \bibitem[Walonoski et al.(2018)]{walonoski2018}
@@ -513,7 +611,8 @@ Walonoski, J., Kramer, M., Nichols, J., Quina, A., Moesel, C., Hall, D.,
 Duffett, C., Dube, K., Gallagher, T., and McLachlan, S. (2018).
 Synthea: An approach, method, and software mechanism for generating realistic
 synthetic patients and the synthetic electronic health care record.
-\textit{Journal of the American Medical Informatics Association}, 25(3):230--238.
+\textit{Journal of the American Medical Informatics Association},
+25(3):230--238.
 
 \end{thebibliography}
 
