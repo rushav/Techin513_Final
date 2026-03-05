@@ -30,7 +30,7 @@ export function DataGenSection() {
     <section id="data-gen" className="py-16 scroll-mt-6">
       <SectionHeader
         title="Data Generation"
-        subtitle="We generate 2500 synthetic sleep sessions using a physiologically-motivated model. Each session simulates 8 hours of bedroom sensor data at 1 Hz, sampling temperature, light, humidity, and noise according to session-specific profiles drawn from predefined quality classes."
+        subtitle="We generate 2500 synthetic sleep sessions using a physiologically-motivated model. Each session simulates 8 hours of bedroom sensor data at 5-minute resolution (96 samples), capturing temperature, light, humidity, and noise according to session-specific profiles drawn from predefined quality classes."
       />
 
       <div className="grid lg:grid-cols-3 gap-4 mb-6">

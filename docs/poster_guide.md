@@ -33,7 +33,7 @@ and provides talking points for the live presentation.
 ### 1. Title Block (top strip)
 - **Title**: "Synthetic Sleep Environment Dataset Generator"
 - **Authors**: Rushav Dash · Lisa Li · TECHIN 513 Team 7 · University of Washington
-- **Abstract**: 3-sentence version — problem, method, key result (R²=0.795, 6/6 sanity checks)
+- **Abstract**: 3-sentence version — problem, method, key result (R²=0.744, 6/6 sanity checks)
 
 **Rubric criterion addressed**: Problem clarity, relevance to course topics
 
@@ -62,7 +62,7 @@ Session Profile ──► Signal Generation ──► Feature Extraction ──�
                      [SP Techniques]
                      • Butterworth LPF
                      • Pink noise (FFT)
-                     • HVAC sawtooth
+                     • HVAC sinusoidal
                      • Poisson events
 ```
 
@@ -96,9 +96,9 @@ Session Profile ──► Signal Generation ──► Feature Extraction ──�
 | Butterworth LPF | Temperature, Humidity | Flat passband, preserves HVAC/circadian |
 | Pink noise (FFT) | Temperature | Models autocorrelated thermal fluctuations |
 | Poisson events | Light, Noise | Memoryless model for rare disturbances |
-| HVAC sawtooth | Temperature | Relaxation oscillator dynamics |
+| HVAC sinusoidal | Temperature | Smooth periodic thermal cycling |
 
-**Key talking point**: "The FFT spectrum confirms our HVAC sawtooth is correctly encoded — the peak appears exactly at 1/90 cycles/minute as expected."
+**Key talking point**: "The FFT spectrum confirms our HVAC model is correctly encoded — the peak appears exactly at 1/90 cycles/minute as expected."
 
 **Rubric criteria**: Signal processing techniques, Technical soundness
 
@@ -110,14 +110,14 @@ Session Profile ──► Signal Generation ──► Feature Extraction ──�
 **What to include**:
 | Model | Mean R² |
 |---|---|
-| Random Forest | **0.795** |
-| Ridge Regression | 0.751 |
-| Mean Baseline | −0.005 |
+| Random Forest | **0.744** |
+| Ridge Regression | 0.727 |
+| Mean Baseline | −0.001 |
 
-- Emphasize: RF outperforms Ridge by 4.4 points (non-linearity confirmed)
+- Emphasize: RF outperforms Ridge by 1.7 points (non-linearity confirmed)
 - Show F09: tight scatter around y=x diagonal
 
-**Key talking point**: "The RF's advantage over Ridge proves that the U-shaped temperature effect on sleep efficiency is genuinely non-linear — exactly what domain knowledge predicts."
+**Key talking point**: "The RF's advantage over Ridge confirms that the U-shaped temperature effect on sleep efficiency is non-linear — exactly what domain knowledge predicts."
 
 **Rubric criteria**: ML integration, Experimental results, Baseline comparison
 
@@ -130,12 +130,12 @@ Session Profile ──► Signal Generation ──► Feature Extraction ──�
 | Disabled | ΔR² |
 |---|---|
 | None (full) | 0.000 |
-| No Butterworth LPF | −0.007 |
-| No pink noise | +0.001 |
-| No Poisson events | **−0.571** |
-| No HVAC sawtooth | +0.003 |
+| No Butterworth LPF | −0.001 |
+| No pink noise | −0.007 |
+| No Poisson events | **−0.355** |
+| No HVAC model | −0.018 |
 
-**Key talking point**: "Removing Poisson events collapses R² from 0.795 to 0.224 — the most dramatic single result. Without discrete disturbance events, the model cannot differentiate session quality. This validates our Poisson modelling as the critical design choice."
+**Key talking point**: "Removing Poisson events collapses R² from 0.744 to 0.390 — the most dramatic single result. Without discrete disturbance events, the model cannot differentiate session quality. This validates our Poisson modelling as the critical design choice."
 
 **Rubric criteria**: Ablation study requirement, Soundness, Comprehensiveness
 
@@ -195,7 +195,7 @@ Sanity check table:
 ### Figures
 - Use F02 for the main signal showcase (recognisable, colourful, 4-panel)
 - Use F09 for ML results (tight scatter = good result, visually compelling)
-- Use F10 for ablation (the −0.571 bar is dramatic and memorable)
+- Use F10 for ablation (the −0.355 no-Poisson bar is dramatic and memorable)
 - Use F12 for seasonal diversity (shows breadth of dataset)
 - Every figure needs a caption with the key finding in one sentence
 
@@ -228,7 +228,7 @@ Sanity check table:
 
 1. **(30 sec)** Problem: "No dataset links bedroom sensors to sleep quality."
 2. **(60 sec)** Pipeline: "We generate signals using 4 SP techniques, extract 34 features, and label sessions via domain knowledge."
-3. **(60 sec)** SP highlight: "This FFT spectrum confirms our HVAC sawtooth is correctly encoded."
-4. **(60 sec)** ML results: "Random Forest achieves R²=0.795, beating Ridge by 4.4 points — confirming non-linearity."
-5. **(60 sec)** Ablation: "Removing Poisson events collapses R² by 0.571 — the key finding."
+3. **(60 sec)** SP highlight: "This FFT spectrum confirms our HVAC sinusoidal model is correctly encoded."
+4. **(60 sec)** ML results: "Random Forest achieves R²=0.744, beating Ridge by 1.7 points — confirming non-linearity."
+5. **(60 sec)** Ablation: "Removing Poisson events collapses R² by 0.355 — the key finding."
 6. **(30 sec)** Validation: "6/6 sleep science checks pass. KS tests fail due to multimodality — a documented limitation."

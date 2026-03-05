@@ -105,28 +105,28 @@ The following numbers appear verbatim in the report.  After running
 
 ### Dataset statistics (`dataset_summary.json`)
 ```
-sleep_efficiency:  mean=0.7668, std=0.1299
-sleep_duration_h:  mean=6.1459, std=1.0626
-awakenings:        mean=2.9084, std=1.3951
-sleep_score:       mean=77.8841, std=11.5599
+sleep_efficiency:  mean=0.8053, std=0.1286
+sleep_duration_h:  mean=6.8455, std=1.1340
+awakenings:        mean=2.4412, std=1.1489
+sleep_score:       mean=82.8200, std=10.9539
 ```
 
 ### ML results (`ml_results.json`)
 ```
-Random Forest test mean R²:  0.7949
-Mean baseline test R²:       -0.0048
-Ridge regression test R²:    0.7514
-CV sleep_efficiency R²:      0.8964 ± 0.0047
-CV awakenings R²:            0.7653 ± 0.0141
+Random Forest test mean R²:  0.7443
+Mean baseline test R²:       -0.0011
+Ridge regression test R²:    0.7271
+CV sleep_efficiency R²:      0.8843 ± 0.0106
+CV awakenings R²:            0.5794 ± 0.0174
 ```
 
 ### Ablation results (`ablation_results.csv`)
 ```
-full_pipeline:  R²=0.7949  ΔR²= 0.0000
-no_lpf:         R²=0.7882  ΔR²=-0.0067
-no_pink:        R²=0.7954  ΔR²=+0.0005
-no_poisson:     R²=0.2236  ΔR²=-0.5713
-no_hvac:        R²=0.7975  ΔR²=+0.0026
+full_pipeline:  R²=0.7443  ΔR²= 0.0000
+no_lpf:         R²=0.7430  ΔR²=-0.0012
+no_pink:        R²=0.7372  ΔR²=-0.0070
+no_poisson:     R²=0.3897  ΔR²=-0.3546
+no_hvac:        R²=0.7260  ΔR²=-0.0183
 ```
 
 ### Sanity checks (`sanity_checks.csv`)

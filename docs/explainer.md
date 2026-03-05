@@ -93,15 +93,16 @@ implementation generates arrival times analytically from the exponential
 distribution, giving exactly Poisson-distributed event counts.
 
 *Why this matters for ML*: The ablation study shows that removing Poisson
-events collapses model R² from 0.795 to 0.224 — a 57% drop.  Without
+events collapses model R² from 0.744 to 0.390 — a 48% drop.  Without
 discrete disturbance events, the model cannot differentiate sleep quality.
 
-### Decision 4: HVAC sawtooth wave
+### Decision 4: HVAC sinusoidal model
 
-Real thermostats overshoot their setpoint and then drift back — a
-"relaxation oscillator" dynamics.  When the heater turns on, temperature
-rises linearly; when it turns off (setpoint reached), it cools slowly.
-This is well-approximated by a sawtooth wave with period 60–120 minutes.
+Real thermostats cycle between heating and cooling phases — a periodic
+thermal oscillation with period 60–120 minutes.  We model this as a
+sinusoidal wave with a random phase offset per session, which smoothly
+captures the on/off thermal cycling without the instantaneous resets
+of a sawtooth (which would be physically impossible for thermal mass).
 
 We include this because it creates the spectral peak at ~1/90 cycles/minute
 that is visible in the FFT of real bedroom temperature data.  Our FFT
@@ -141,7 +142,7 @@ Session profile (seed, season, quality class)
     │
     ├─► Temperature signal:
     │   • Circadian sinusoid
-    │   • + HVAC sawtooth        ─► composite ─► Butterworth LPF (0.02 cpm) ─► T[t]
+    │   • + HVAC sinusoidal      ─► composite ─► Butterworth LPF (0.02 cpm) ─► T[t]
     │   • + pink noise (1/f)
     │
     ├─► Light signal:
@@ -151,7 +152,7 @@ Session profile (seed, season, quality class)
     │
     ├─► Humidity signal:
     │   • Anti-correlated with T: H = H₀ - β(T - T̄) + pink noise
-    │   • Butterworth LPF (0.01 cpm)                                   ─► H[t]
+    │   • Butterworth LPF (0.02 cpm)                                   ─► H[t]
     │
     └─► Noise signal:
         • Quiet baseline + Poisson arrivals with exponential decay      ─► N[t]
@@ -188,23 +189,23 @@ Session profile (seed, season, quality class)
 
 ## Results Explained
 
-### R² = 0.795 — what does this mean?
+### R² = 0.744 — what does this mean?
 
-R² = 0.795 means our Random Forest explains 79.5% of the variance in the
-four sleep quality targets.  The remaining 20.5% is "residual" — variance
+R² = 0.744 means our Random Forest explains 74.4% of the variance in the
+four sleep quality targets.  The remaining 25.6% is "residual" — variance
 in the labels that cannot be predicted from the environmental features alone.
 This residual comes from the Gaussian noise we intentionally added to labels
 to prevent a perfectly deterministic (unrealistic) dataset.
 
-### Why Ridge R² = 0.751 but RF = 0.795?
+### Why Ridge R² = 0.727 but RF = 0.744?
 
-The 4.4-point gap confirms that at least some feature–label relationships
+The 1.7-point gap confirms that at least some feature–label relationships
 are genuinely non-linear.  The most likely non-linearity is the temperature
-"sweet spot": sessions at both 14°C and 28°C get penalised for sleep quality,
+"sweet spot": sessions at both 15°C and 30°C get penalised for sleep quality,
 while sessions at 18–21°C do not.  This is a U-shape that Ridge (a linear model)
 cannot fit but Random Forest handles naturally via its binary splitting structure.
 
-### Ablation ΔR² = −0.571 for no-Poisson — why so dramatic?
+### Ablation ΔR² = −0.355 for no-Poisson — why so dramatic?
 
 Removing Poisson events means light_n_events and noise_n_events become zero
 for every session.  These two features are among the highest-ranked by feature

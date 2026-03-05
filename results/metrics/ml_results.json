@@ -1,117 +1,117 @@
 {
   "val_metrics": {
-    "val_sleep_efficiency_r2": 0.8785220188327264,
-    "val_sleep_efficiency_mae": 0.037181808000000025,
-    "val_sleep_efficiency_rmse": 0.04449818027657611,
-    "val_sleep_duration_h_r2": 0.8064579704580757,
-    "val_sleep_duration_h_mae": 0.39106328,
-    "val_sleep_duration_h_rmse": 0.487462342972528,
-    "val_awakenings_r2": 0.6155414144990986,
-    "val_awakenings_mae": 0.6108666666666667,
-    "val_awakenings_rmse": 0.7285547794549608,
-    "val_sleep_score_r2": 0.7480557247961874,
-    "val_sleep_score_mae": 4.364405733333334,
-    "val_sleep_score_rmse": 5.430152093671656,
-    "val_mean_r2": 0.762144282146522,
-    "best_params": "{'n_estimators': 200, 'max_features': 'log2', 'min_samples_split': 2}"
+    "val_sleep_efficiency_r2": 0.8417356366537415,
+    "val_sleep_efficiency_mae": 0.04339656010447582,
+    "val_sleep_efficiency_rmse": 0.05016477999015584,
+    "val_sleep_duration_h_r2": 0.7948642000002233,
+    "val_sleep_duration_h_mae": 0.3906559788520124,
+    "val_sleep_duration_h_rmse": 0.47908857925150145,
+    "val_awakenings_r2": 0.42035003054965236,
+    "val_awakenings_mae": 0.7847681331014664,
+    "val_awakenings_rmse": 0.9079598381331173,
+    "val_sleep_score_r2": 0.7143863664112486,
+    "val_sleep_score_mae": 4.578408789838553,
+    "val_sleep_score_rmse": 5.5050052265696765,
+    "val_mean_r2": 0.6928340584037164,
+    "best_params": "{'n_estimators': 300, 'max_features': 'sqrt', 'min_samples_split': 5}"
   },
   "test_metrics": {
-    "test_sleep_efficiency_r2": 0.8642085202901504,
-    "test_sleep_efficiency_mae": 0.03655086266666663,
-    "test_sleep_efficiency_rmse": 0.04366781322491425,
-    "test_sleep_duration_h_r2": 0.7770217863845328,
-    "test_sleep_duration_h_mae": 0.3925603466666667,
-    "test_sleep_duration_h_rmse": 0.48825376623650685,
-    "test_awakenings_r2": 0.5904198083464918,
-    "test_awakenings_mae": 0.60704,
-    "test_awakenings_rmse": 0.7414025447308186,
-    "test_sleep_score_r2": 0.7454337169917649,
-    "test_sleep_score_mae": 4.136527333333335,
-    "test_sleep_score_rmse": 5.117082710427235,
-    "test_mean_r2": 0.744270958003235
+    "test_sleep_efficiency_r2": 0.8652597158684092,
+    "test_sleep_efficiency_mae": 0.04066998486670121,
+    "test_sleep_efficiency_rmse": 0.0477945199507994,
+    "test_sleep_duration_h_r2": 0.8228316668173534,
+    "test_sleep_duration_h_mae": 0.40418277924421275,
+    "test_sleep_duration_h_rmse": 0.4788789808365268,
+    "test_awakenings_r2": 0.5221527910923011,
+    "test_awakenings_mae": 0.6571937522970857,
+    "test_awakenings_rmse": 0.789966592445355,
+    "test_sleep_score_r2": 0.7396193390917047,
+    "test_sleep_score_mae": 4.524424762740955,
+    "test_sleep_score_rmse": 5.407041174404426,
+    "test_mean_r2": 0.7374658782174421
   },
   "cv_metrics": {
-    "sleep_efficiency_cv_r2_mean": 0.884341531087746,
-    "sleep_efficiency_cv_r2_std": 0.010612889530681704,
-    "sleep_duration_h_cv_r2_mean": 0.815064001410612,
-    "sleep_duration_h_cv_r2_std": 0.011760618488182422,
-    "awakenings_cv_r2_mean": 0.5793633997325813,
-    "awakenings_cv_r2_std": 0.017377290254158274,
-    "sleep_score_cv_r2_mean": 0.7589768999893702,
-    "sleep_score_cv_r2_std": 0.01998324457322916
+    "sleep_efficiency_cv_r2_mean": 0.8350353888465051,
+    "sleep_efficiency_cv_r2_std": 0.04189767942138182,
+    "sleep_duration_h_cv_r2_mean": 0.769682069885716,
+    "sleep_duration_h_cv_r2_std": 0.06350332916462768,
+    "awakenings_cv_r2_mean": 0.5163628550307776,
+    "awakenings_cv_r2_std": 0.054864794022753446,
+    "sleep_score_cv_r2_mean": 0.6977581374966813,
+    "sleep_score_cv_r2_std": 0.05482640905439935
   },
   "baselines": {
     "mean_baseline": {
-      "test_sleep_efficiency_r2": -0.0022180998311305267,
-      "test_sleep_efficiency_mae": 0.09137046354285691,
-      "test_sleep_efficiency_rmse": 0.1186332162163768,
-      "test_sleep_duration_h_r2": -0.0005417723822238596,
-      "test_sleep_duration_h_mae": 0.7980307748571425,
-      "test_sleep_duration_h_rmse": 1.0342654057990401,
-      "test_awakenings_r2": -0.00019532149729206694,
-      "test_awakenings_mae": 1.0192533333333333,
-      "test_awakenings_rmse": 1.1585826198743143,
-      "test_sleep_score_r2": -0.0013505143650984763,
-      "test_sleep_score_mae": 8.35922555428571,
-      "test_sleep_score_rmse": 10.148808521921065,
-      "test_mean_r2": -0.0010764270189362324
+      "test_sleep_efficiency_r2": -4.284613669791604e-05,
+      "test_sleep_efficiency_mae": 0.09856229714285715,
+      "test_sleep_efficiency_rmse": 0.130208302823868,
+      "test_sleep_duration_h_r2": -6.522747099046988e-05,
+      "test_sleep_duration_h_mae": 0.8894517333333333,
+      "test_sleep_duration_h_rmse": 1.1377501176056035,
+      "test_awakenings_r2": -0.014202509209510161,
+      "test_awakenings_mae": 0.9967619047619048,
+      "test_awakenings_rmse": 1.1508707144421324,
+      "test_sleep_score_r2": -0.00019098423264751752,
+      "test_sleep_score_mae": 8.402570666666664,
+      "test_sleep_score_rmse": 10.597337894236734,
+      "test_mean_r2": -0.003625391762461516
     },
     "ridge_regression": {
-      "test_sleep_efficiency_r2": 0.8387998682747391,
-      "test_sleep_efficiency_mae": 0.03970466637488886,
-      "test_sleep_efficiency_rmse": 0.047578186006031406,
-      "test_sleep_duration_h_r2": 0.7349786305008971,
-      "test_sleep_duration_h_mae": 0.43093124404873795,
-      "test_sleep_duration_h_rmse": 0.5322979983021687,
-      "test_awakenings_r2": 0.6041735034047943,
-      "test_awakenings_mae": 0.596729258612372,
-      "test_awakenings_rmse": 0.7288481086520714,
-      "test_sleep_score_r2": 0.7304844310032892,
-      "test_sleep_score_mae": 4.241086418013369,
-      "test_sleep_score_rmse": 5.2651885125057944,
-      "test_mean_r2": 0.7271091082959299
+      "test_sleep_efficiency_r2": 0.8471610031376964,
+      "test_sleep_efficiency_mae": 0.041555491402766584,
+      "test_sleep_efficiency_rmse": 0.05090336162192114,
+      "test_sleep_duration_h_r2": 0.7724689521883182,
+      "test_sleep_duration_h_mae": 0.4387073641300021,
+      "test_sleep_duration_h_rmse": 0.5426915494234094,
+      "test_awakenings_r2": 0.6098322189670978,
+      "test_awakenings_mae": 0.5977905635341615,
+      "test_awakenings_rmse": 0.713821953458075,
+      "test_sleep_score_r2": 0.6978480429979395,
+      "test_sleep_score_mae": 4.668749066394692,
+      "test_sleep_score_rmse": 5.82462567094456,
+      "test_mean_r2": 0.7318275543227629
     }
   },
   "top10_features": [
     {
       "feature": "env_stress_score",
-      "importance": 0.16755759875103354
+      "importance": 0.18174966470372997
     },
     {
       "feature": "temp_mean",
-      "importance": 0.13685701070520837
+      "importance": 0.111739612636039
     },
     {
       "feature": "temp_min",
-      "importance": 0.11676131788452701
+      "importance": 0.09229950482838006
     },
     {
       "feature": "temp_max",
-      "importance": 0.10719301648461536
+      "importance": 0.07893126343461469
     },
     {
       "feature": "temp_in_optimal",
-      "importance": 0.06454850689677678
-    },
-    {
-      "feature": "light_frac_dark",
-      "importance": 0.047652755082759284
+      "importance": 0.07169096752099308
     },
     {
       "feature": "light_n_events",
-      "importance": 0.04700630648250617
+      "importance": 0.04794547268075208
     },
     {
-      "feature": "noise_std",
-      "importance": 0.03622625281542123
+      "feature": "light_frac_dark",
+      "importance": 0.04424483809524327
     },
     {
       "feature": "light_max",
-      "importance": 0.03304458003055292
+      "importance": 0.03938515994118357
     },
     {
       "feature": "light_std",
-      "importance": 0.030025539125944037
+      "importance": 0.033575145286020236
+    },
+    {
+      "feature": "noise_std",
+      "importance": 0.03234583757273382
     }
   ]
 }

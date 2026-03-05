@@ -443,7 +443,7 @@ def plot_ablation(
     )
     ax.set_xticks(range(len(df)))
     ax.set_xticklabels(
-        ["No LPF\n(Butterworth)", "No Pink\nNoise", "No Poisson\nEvents", "No HVAC\nSawtooth"],
+        ["No LPF\n(Butterworth)", "No Pink\nNoise", "No Poisson\nEvents", "No HVAC\nModel"],
         fontsize=9,
     )
     for bar, val in zip(bars, df["delta_r2"]):

@@ -1,7 +1,7 @@
 """
 feature_extraction.py — Extract scalar ML features from session time-series.
 
-We compute 36 clinically and physically motivated scalar features from the
+We compute 34 clinically and physically motivated scalar features from the
 four environmental time-series (temperature, light, humidity, noise) in
 each session.  Features span five categories:
 
@@ -188,7 +188,7 @@ def _count_threshold_crossings(
 # ---------------------------------------------------------------------------
 
 def extract_features(session: Dict) -> Dict[str, float]:
-    """Extract the full 36-feature vector from one session dictionary.
+    """Extract the full 34-feature vector from one session dictionary.
 
     We compute all features from the raw time-series stored in ``session``
     and return a flat dictionary mapping feature names to scalar values.
@@ -203,7 +203,7 @@ def extract_features(session: Dict) -> Dict[str, float]:
     Returns
     -------
     dict
-        Feature dictionary with 36 entries (keys from FEATURE_NAMES).
+        Feature dictionary with 34 entries (keys from FEATURE_NAMES).
     """
     temp = session["temperature"]
     light = session["light"]
@@ -304,7 +304,7 @@ def build_feature_matrix(
 
     Returns
     -------
-    X : np.ndarray, shape (N, 36)
+    X : np.ndarray, shape (N, 34)
         Feature matrix.
     y : np.ndarray, shape (N, 4)
         Label matrix: [sleep_efficiency, sleep_duration_h, awakenings, sleep_score]

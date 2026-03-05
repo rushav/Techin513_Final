@@ -30,10 +30,10 @@ this gap using rigorous signal processing and machine learning.
 │  Session Profile   ──►  Temperature  ──►  Butterworth LPF      │
 │  (season, quality)       (spectral        (order 4, 0.02 cpm)  │
 │                          synthesis +                            │
-│                          HVAC sawtooth +                        │
+│                          HVAC sinusoidal +                      │
 │  Poisson events   ──►   pink 1/f noise)                        │
 │  (light, noise)                                                 │
-│                    ──►  Humidity     ──►  LPF (0.01 cpm)       │
+│                    ──►  Humidity     ──►  LPF (0.02 cpm)       │
 │                          (anti-corr with temperature)           │
 └────────────────────────────┬────────────────────────────────────┘
                              │ 4 signals × 96 time steps
@@ -81,17 +81,17 @@ this gap using rigorous signal processing and machine learning.
 
 | Metric | Value |
 |---|---|
-| Sleep efficiency (mean ± std) | 0.767 ± 0.130 |
-| Sleep duration (mean ± std) | 6.15 ± 1.06 h |
-| Awakenings (mean ± std) | 2.91 ± 1.40 |
-| Sleep score (mean ± std) | 77.9 ± 11.6 |
-| RF Test R² (mean over 4 targets) | **0.795** |
-| Mean baseline R² | −0.005 |
-| Ridge Regression R² | 0.751 |
-| RF vs. Ridge advantage | +0.044 (confirms non-linearity) |
+| Sleep efficiency (mean ± std) | 0.805 ± 0.129 |
+| Sleep duration (mean ± std) | 6.85 ± 1.13 h |
+| Awakenings (mean ± std) | 2.44 ± 1.15 |
+| Sleep score (mean ± std) | 82.8 ± 11.0 |
+| RF Test R² (mean over 4 targets) | **0.744** |
+| Mean baseline R² | −0.001 |
+| Ridge Regression R² | 0.727 |
+| RF vs. Ridge advantage | +0.017 (confirms non-linearity) |
 | Sanity checks passed | **6 / 6** |
-| Ablation: no Poisson events | ΔR² = **−0.571** |
-| Wall time | ~31 s |
+| Ablation: no Poisson events | ΔR² = **−0.355** |
+| Wall time | ~30 s |
 
 ---
 
@@ -99,10 +99,10 @@ this gap using rigorous signal processing and machine learning.
 
 | Signal | Unit | Range | Key Components |
 |---|---|---|---|
-| Temperature | °C | 14–28 | Circadian sinusoid + HVAC sawtooth + pink noise + Butterworth LPF |
-| Illuminance | lux | 0–5000 | Dark baseline + Poisson light-intrusion events |
+| Temperature | °C | 15–30 | Circadian sinusoid + HVAC sinusoidal model + pink noise + Butterworth LPF |
+| Illuminance | lux | 0–200 | Dark baseline + Poisson light-intrusion events |
 | Relative Humidity | % | 20–80 | Anti-correlated with temperature + pink noise + LPF |
-| Ambient Noise | dB SPL | 20–90 | Quiet baseline + Poisson noise events (exponential decay) |
+| Ambient Noise | dB SPL | 20–65 | Quiet baseline + Poisson noise events |
 
 ---
 

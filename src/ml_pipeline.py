@@ -14,7 +14,7 @@ We choose Random Forest over alternatives for the following reasons:
     non-linear (e.g., temperature has a U-shaped effect: too cold and
     too hot are both bad).  Linear models cannot capture this.
 
-  • **vs. Neural Networks**: our dataset has 2,500 samples and 36 features —
+  • **vs. Neural Networks**: our dataset has 2,500 samples and 34 features —
     a regime where tree ensembles consistently match or outperform neural
     networks without requiring normalisation, dropout tuning, or GPU compute.
 

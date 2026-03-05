@@ -80,8 +80,8 @@ export function SignalProcessingSection() {
 
       <div className="callout">
         <strong className="text-slate-200">Filter Design:</strong> We use a 4th-order Butterworth low-pass filter
-        with cutoff at 0.1 cycles/hour (≈10-hour period). The −3 dB point preserves circadian-scale
-        variation while attenuating Poisson spikes. The PSD confirms residuals follow 1/f pink noise statistics.
+        with cutoff at 0.02 cpm (1.2 cycles/hour, ≈50-minute period). This preserves circadian drift and
+        HVAC cycles while attenuating high-frequency noise. The PSD confirms residuals follow 1/f pink noise statistics.
       </div>
     </section>
   )

@@ -37,13 +37,13 @@ A Poisson process is a stochastic model for events where: (1) events occur rando
 
 ---
 
-**Q6. How did we choose the Butterworth cutoff frequencies (0.02 cpm for temperature, 0.01 cpm for humidity)?**
+**Q6. How did we choose the Butterworth cutoff frequencies (0.02 cpm for both temperature and humidity)?**
 
 At 5-minute sampling, the Nyquist frequency is 0.1 cpm. Our temperature signals contain:
 - Circadian component: 1/1440 cpm ≈ 0.0007 cpm (in passband)
 - HVAC component: 1/90 cpm ≈ 0.011 cpm (in passband)
 
-The cutoff at 0.02 cpm sits above the HVAC frequency, preserving both the circadian and HVAC components while attenuating higher-frequency artefacts from the sawtooth discontinuities. Humidity changes more slowly (the thermal inertia of walls and furniture integrates temperature fluctuations), so we use a lower cutoff of 0.01 cpm (period ~100 min).
+The cutoff at 0.02 cpm sits above the HVAC frequency, preserving both the circadian and HVAC components while attenuating higher-frequency artefacts. We use the same 0.02 cpm cutoff for humidity to ensure it tracks the HVAC-driven temperature variations at similar time scales, which is required to maintain the correct anti-correlation between temperature and humidity (r ≈ −0.6). A lower humidity cutoff (tested at 0.01 cpm) over-smoothed the signal and destroyed the anti-correlation.
 
 ---
 
@@ -81,13 +81,13 @@ We have a regression (not classification) task, so "accuracy" is not directly ap
 
 **Q12. How do we know the model is not overfitting?**
 
-We have three independent sources of evidence: (1) the test set is held out until final evaluation, so the reported R²=0.795 is a genuine out-of-sample estimate; (2) 5-fold CV shows R²=0.896±0.005 for sleep efficiency and 0.765±0.014 for awakenings — low standard deviations indicate stable, consistent performance; and (3) the val R² (0.820) and test R² (0.795) are close, with no large train→test degradation that would signal overfitting.
+We have three independent sources of evidence: (1) the test set is held out until final evaluation, so the reported R²=0.744 is a genuine out-of-sample estimate; (2) 5-fold CV shows R²=0.884±0.011 for sleep efficiency and 0.579±0.017 for awakenings — low standard deviations indicate stable, consistent performance; and (3) the val R² (0.762) and test R² (0.744) are close, with no large train→test degradation that would signal overfitting.
 
 ---
 
 **Q13. What do feature importances reveal about the problem?**
 
-The top-ranked features in our Random Forest are predominantly event-based: noise_n_events, light_n_events, and env_stress_score dominate importances. This aligns with the ablation study finding that removing Poisson events collapses performance (ΔR²=-0.571). Temperature-based features (temp_in_optimal, temp_mean) rank next, confirming the well-documented optimal temperature band effect. Spectral entropy features rank lower, suggesting that the frequency-domain complexity of the signals is less directly predictive than the count and magnitude of disturbance events.
+The top-ranked features in our Random Forest are predominantly event-based: noise_n_events, light_n_events, and env_stress_score dominate importances. This aligns with the ablation study finding that removing Poisson events collapses performance (ΔR²=-0.355). Temperature-based features (temp_in_optimal, temp_mean) rank next, confirming the well-documented optimal temperature band effect. Spectral entropy features rank lower, suggesting that the frequency-domain complexity of the signals is less directly predictive than the count and magnitude of disturbance events.
 
 ---
 
@@ -101,7 +101,7 @@ Real bedroom sensor data paired with sleep quality labels requires: (1) multi-ni
 
 **Q15. How do we ensure physical plausibility and not just plausible-looking noise?**
 
-Physical plausibility comes from three sources: (1) parameter ranges grounded in published literature (temperature 14–28°C from Ref [1], optimal 18–21°C; Poisson rates from Ref [3]); (2) signal structure matching known physics (pink noise for thermal fluctuations, HVAC sawtooth for thermostat dynamics, exponential decay for acoustic dissipation); and (3) verified relationships in the data — our sanity checks confirm that the correlations between environment and sleep quality match sleep science predictions. The FFT spectrum (Figure F03) provides direct visual verification that the HVAC cycle appears at the expected frequency.
+Physical plausibility comes from three sources: (1) parameter ranges grounded in published literature (temperature 15–30°C from Ref [1], optimal 18–21°C; Poisson rates from Ref [3]); (2) signal structure matching known physics (pink noise for thermal fluctuations, HVAC sinusoidal model for thermostat dynamics, exponential decay for acoustic dissipation); and (3) verified relationships in the data — our sanity checks confirm that the correlations between environment and sleep quality match sleep science predictions. The FFT spectrum (Figure F03) provides direct visual verification that the HVAC cycle appears at the expected frequency.
 
 ---
 
@@ -127,16 +127,16 @@ Key assumptions: (1) sleep quality depends linearly on the sum of environmental 
 
 **Q19. Walk through the ablation study and what each removal proves.**
 
-- **No Butterworth LPF** (ΔR²=−0.007): The filter provides modest but consistent help by smoothing the temperature signal, making temporal features like ACF and slope more reliable. Its removal slightly degrades performance.
-- **No pink noise** (ΔR²=+0.001): Pink noise contributes minimal information for label prediction because its effect is already captured by the temperature statistics (mean, std). Its value is in physical realism (autocorrelated fluctuations) rather than label discriminability.
-- **No Poisson events** (ΔR²=−0.571): Catastrophic collapse. Light and noise events are the primary drivers of sleep quality differentiation in our model. Without them, light_n_events and noise_n_events become zero for all sessions, removing the most informative features.
-- **No HVAC sawtooth** (ΔR²=+0.003): Negligible effect. The HVAC cycle contributes to temp_hvac_power and ACF features but these are secondary to the event-based features.
+- **No Butterworth LPF** (ΔR²=−0.001): The filter provides a small benefit by smoothing the temperature signal, making temporal features like ACF and slope more reliable. Its removal slightly degrades performance.
+- **No pink noise** (ΔR²=−0.007): Pink noise contributes modest information; removing it reduces performance slightly. Its primary value is physical realism (autocorrelated fluctuations) rather than label discriminability.
+- **No Poisson events** (ΔR²=−0.355): Largest single impact. Light and noise events are the primary drivers of sleep quality differentiation. Without them, light_n_events and noise_n_events become zero for all sessions, removing the most informative features.
+- **No HVAC model** (ΔR²=−0.018): Meaningful effect. The HVAC sinusoidal cycle contributes to temp_hvac_power and spectral features that the model relies on for temperature-related discrimination.
 
 ---
 
 **Q20. What does the baseline comparison demonstrate?**
 
-The mean baseline (R²≈0) proves that the labels are not trivially constant — there is genuine variance to explain. The Ridge baseline (R²=0.751) quantifies the performance achievable by a linear model. The Random Forest's improvement to 0.795 (+0.044) confirms that at least some feature–label relationships are non-linear. The most likely non-linearity is the U-shaped temperature effect: sessions at both 14°C and 28°C have poor sleep, while 18–21°C sessions have good sleep — a relationship that Ridge cannot fit but RF handles naturally via binary splits.
+The mean baseline (R²≈0) proves that the labels are not trivially constant — there is genuine variance to explain. The Ridge baseline (R²=0.727) quantifies the performance achievable by a linear model. The Random Forest's improvement to 0.744 (+0.017) confirms that at least some feature–label relationships are non-linear. The most likely non-linearity is the U-shaped temperature effect: sessions at both 15°C and 30°C have poor sleep, while 18–21°C sessions have good sleep — a relationship that Ridge cannot fit but RF handles naturally via binary splits.
 
 ---
 
