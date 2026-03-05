@@ -44,7 +44,7 @@ export function ValidationSection() {
           <div className="text-xs text-slate-400 uppercase tracking-wider">KS Tests at α={ksData?.alpha ?? 0.05}</div>
         </Card>
         <Card className="text-center">
-          <div className="text-3xl font-bold font-mono text-secondary mb-1">500</div>
+          <div className="text-3xl font-bold font-mono text-secondary mb-1">2500</div>
           <div className="text-xs text-slate-400 uppercase tracking-wider">Sessions Validated</div>
         </Card>
       </div>
@@ -91,7 +91,7 @@ export function ValidationSection() {
             </table>
           </div>
           <p className="text-xs text-slate-500 mt-3">
-            KS test failures are expected at n=500 for well-separated distributions — large samples
+            KS test failures are expected at n=2500 for well-separated distributions — large samples
             detect even small deviations. All sanity checks (domain bounds) pass.
           </p>
         </Card>

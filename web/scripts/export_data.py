@@ -57,8 +57,8 @@ def r2(v, decimals=4):
     return round(float(v), decimals)
 
 # ══════════════════════════════════════════════════════════════════════════════
-print("▶ Generating dataset (500 sessions, seed=42)...")
-sessions = generate_dataset(n_sessions=500, global_seed=42)
+print("▶ Generating dataset (2500 sessions, seed=42)...")
+sessions = generate_dataset(n_sessions=2500, global_seed=42)
 
 print("▶ Extracting features...")
 X, y, feature_names, label_names, metadata = build_feature_matrix(sessions)
@@ -121,7 +121,7 @@ quality_counts = df["quality_class"].value_counts().to_dict()
 season_counts  = df["season"].value_counts().to_dict()
 
 save("dataset_stats.json", {
-    "n_sessions":    500,
+    "n_sessions":    2500,
     "n_features":    len(feature_names),
     "n_labels":      len(label_names),
     "seed":          42,
@@ -546,6 +546,10 @@ ml_summary = {
     },
     "ridge_mean_r2": r2(baseline_metrics["ridge_regression"]["test_mean_r2"]),
     "mean_baseline_r2": r2(baseline_metrics["mean_baseline"]["test_mean_r2"]),
+    "rf_vs_ridge_delta": r2(test_metrics["test_mean_r2"] -
+                            baseline_metrics["ridge_regression"]["test_mean_r2"]),
+    "rf_vs_mean_delta":  r2(test_metrics["test_mean_r2"] -
+                            baseline_metrics["mean_baseline"]["test_mean_r2"]),
 }
 save("ml_summary.json", ml_summary)
 

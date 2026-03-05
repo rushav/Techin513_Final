@@ -93,7 +93,7 @@ export function MLSection() {
                       <div className="w-16 text-slate-300">{cls}</div>
                       <span>P:<strong className="text-slate-200 ml-1">{r.precision?.toFixed(2)}</strong></span>
                       <span>R:<strong className="text-slate-200 ml-1">{r.recall?.toFixed(2)}</strong></span>
-                      <span>F1:<strong className="text-slate-200 ml-1">{r['f1-score']?.toFixed(2)}</strong></span>
+                      <span>F1:<strong className="text-slate-200 ml-1">{(r['f1-score'] ?? r['f1'])?.toFixed(2)}</strong></span>
                     </div>
                   )
                 })}

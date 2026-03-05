@@ -30,7 +30,7 @@ export function DataGenSection() {
     <section id="data-gen" className="py-16 scroll-mt-6">
       <SectionHeader
         title="Data Generation"
-        subtitle="We generate 500 synthetic sleep sessions using a physiologically-motivated model. Each session simulates 8 hours of bedroom sensor data at 1 Hz, sampling temperature, light, humidity, and noise according to session-specific profiles drawn from predefined quality classes."
+        subtitle="We generate 2500 synthetic sleep sessions using a physiologically-motivated model. Each session simulates 8 hours of bedroom sensor data at 1 Hz, sampling temperature, light, humidity, and noise according to session-specific profiles drawn from predefined quality classes."
       />
 
       <div className="grid lg:grid-cols-3 gap-4 mb-6">
@@ -66,9 +66,9 @@ export function DataGenSection() {
           <h3 className="text-sm font-semibold text-slate-300 mb-3">Session Profile Parameters</h3>
           <div className="space-y-3 text-sm text-slate-400">
             {[
-              { param: 'Base Temperature', range: '16–26 °C', note: 'Gaussian by quality class' },
-              { param: 'Light Level', range: '0–50 lux', note: 'Good=low, Poor=high' },
-              { param: 'Humidity', range: '30–70 %', note: 'Optimal near 45–55%' },
+              { param: 'Base Temperature', range: '15–30 °C', note: 'Gaussian by quality class' },
+              { param: 'Light Level', range: '0–100 lux', note: 'Good=low, Poor=high' },
+              { param: 'Humidity', range: '20–80 %', note: 'Optimal near 45–55%' },
               { param: 'Noise Events', range: '0–30 / night', note: 'Poisson process, λ by class' },
               { param: 'Pink Noise', range: '1/f spectrum', note: 'Added to all channels' },
               { param: 'Circadian Drift', range: '±0.5 °C', note: 'Sinusoidal over 8 h' },

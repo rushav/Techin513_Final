@@ -35,7 +35,7 @@ export default function App() {
 
         <footer className="py-16 text-center text-xs text-slate-600">
           <div>TECHIN 513 Final Project · Sleep Environment Signal Processing</div>
-          <div className="font-mono mt-1">Generated with seed = 42 · n_sessions = 500</div>
+          <div className="font-mono mt-1">Generated with seed = 42 · n_sessions = 2500</div>
         </footer>
       </main>
     </div>
